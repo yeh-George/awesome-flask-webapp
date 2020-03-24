@@ -1,10 +1,76 @@
+{% from 'bootstrap/nav.html' import render_nav_item %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block head %}
+        <title>{% block title %} {% endblock title %} - Blog Title </title>
+        {% block styles %}
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='open-iconic/font/css/open-iconic-bootstrap.css') }}">
+        {% endblock styles %}
+    {% endblock head %}
 </head>
 <body>
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg bg-light">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='favicon.ico') }}" alt="awesome-webapp">
+            </a>
+            <!-- collapsible Button -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- collapse -->
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <div class="navbar-nav mr-auto">
+                    {{ render_nav_item('main.index', 'Home') }}
+                    {{ render_nav_item('main.about', 'About') }}
+                    <form class="form-inline" >
+                        <input type="text" class="form-control" name="q" placeholder="Search">
+                        <button class="btn btn-light" type="submit">
+                            <span class="oi oi-magnifying-glass"></span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="navbar-nav ml-auto">
+                    <a class="btn btn-outline-primary" href="#">Login</a>&nbsp;&nbsp;
+                    <a class="btn btn-primary" href="#">Register</a>
+                </div>
+            </div>
+    </nav>
+{% endblock navbar %}
+
+<main class="container">
+    {% for message in get_flashed_messages(with_categories=True) %}
+        <div class="alter alter-{{ message[0] }} alter-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alter">&times;</button>
+            {{ message[1] }}
+        </div>
+    {% endfor %}
+
+    {% block content%} {% endblock content %}
+
+    {% block footer %}
+        <footer>
+            <p class="float-left">
+                <small>&copy;2020
+                    <a href="#">Yeh</a> -
+                    <a href="https://github.com/yeh-George/">GitHunb</a>
+                </small>
+            </p>
+        </footer>
+    {% endblock footer%}
+</main>
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+{% endblock scripts %}
 
 </body>
 </html>

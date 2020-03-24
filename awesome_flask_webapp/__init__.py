@@ -3,8 +3,8 @@ import os
 from flask import Flask
 
 from awesome_flask_webapp.settings import config
-from awesome_flask_webapp.extensions import db
-
+from awesome_flask_webapp.extensions import db, bootstrap
+from awesome_flask_webapp.blueprints.main import main_bp
 
 def create_app(config_name=None):
     if config_name is None:
@@ -31,10 +31,10 @@ def create_app(config_name=None):
 
 def register_extensions(app):
     db.init_app(app)
-
+    bootstrap.init_app(app)
 
 def register_blueprints(app):
-    pass
+    app.register_blueprint(main_bp)
 
 
 def register_errorhandlers(app):

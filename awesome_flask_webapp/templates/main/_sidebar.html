@@ -1,0 +1,42 @@
+{% if links %}
+    <div class="card">
+        <div class="card-header">友情链接</div>
+        <div class="list-group">
+            {% for link in links %}
+                <a href="{{ link.url }}" target="_blank" class="list-group-item list-group-item-action">{{ link.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+{% endif%}
+
+
+{% if tags %}
+    <div class="card">
+        <div class="card-header">标签</div>
+        <div class="list-group">
+            {% for tag in tags %}
+                <a href="#" target="_blank" class="list-group-item list-group-item-action">
+                    {{ tag.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">友情链接</div>
+    <div class="list-group">
+            <a href="#" target="_blank" class="list-group-item list-group-item-action"> a link </a>
+            <a href="#" target="_blank" class="list-group-item list-group-item-action"> b link </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">标签</div>
+    <div class="list-group">
+        <a href="{{ url_for('main.index') }}" target="_blank" class="list-group-item list-group-item-action">
+            a tag <span class="badge badge-primary badge-pill">9</span></a>
+        <a href="#" target="_blank" class="list-group-item list-group-item-action">
+            b tag <span class="badge badge-primary">9</span></a>
+    </div>
+</div>
