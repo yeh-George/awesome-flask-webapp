@@ -1,10 +1,12 @@
 import os
+import click
 
 from flask import Flask
 
 from awesome_flask_webapp.settings import config
-from awesome_flask_webapp.extensions import db, bootstrap
+from awesome_flask_webapp.extensions import db, bootstrap, login_manager
 from awesome_flask_webapp.blueprints.main import main_bp
+from awesome_flask_webapp.blueprints.auth import auth_bp
 
 def create_app(config_name=None):
     if config_name is None:
@@ -32,9 +34,12 @@ def create_app(config_name=None):
 def register_extensions(app):
     db.init_app(app)
     bootstrap.init_app(app)
+    login_manager.init_app(app)
+
 
 def register_blueprints(app):
     app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
 
 
 def register_errorhandlers(app):
@@ -50,6 +55,10 @@ def register_template_context(app):
 
 
 def register_commands(app):
-    pass
+    @app.cli.command()
+    def init_db():
+        db.drop_all()
+        db.create_all()
+        click.echo('database initialized.')
 
 

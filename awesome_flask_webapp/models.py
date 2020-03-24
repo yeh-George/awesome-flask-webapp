@@ -2,22 +2,25 @@ from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from flask_login import UserMixin
+
 from awesome_flask_webapp.extensions import db
 
 
 class Permission(db.Model):
-    pass
+    id = db.Column(db.Integer, primary_key=True)
 
 
 class Role(db.Model):
-    pass
+    id = db.Column(db.Integer, primary_key=True)
 
 
-class User(db.Model):
+
+class User(db.Model, UserMixin):
     # account info
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, index=True)
-    email = db.Column(db.String(254), index=True)
+    email = db.Column(db.String(254), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     # user info
     name = db.Column(db.String(30))
@@ -33,17 +36,17 @@ class User(db.Model):
 
 
 class Tag(db.Model):
-    pass
+    id = db.Column(db.Integer, primary_key=True)
 
 
 class Post(db.Model):
-    pass
+    id = db.Column(db.Integer, primary_key=True)
 
 
 class Comment(db.Model):
-    pass
+    id = db.Column(db.Integer, primary_key=True)
 
 
 class Collect(db.Model):
-    pass
+    id = db.Column(db.Integer, primary_key=True)
 
