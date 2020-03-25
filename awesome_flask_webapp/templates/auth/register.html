@@ -12,7 +12,9 @@
             <div class="col-md-5">
                 {{ render_form(form) }}
                 <hr>
-                <p class="small">Already have an account? <a href="#" >Click here to log in.</a> </p>
+                <p class="small">
+                    Already have an account? <a href="{{ url_for('auth.login') }}" >Click here to log in.</a>
+                </p>
             </div>
         </div>
     </div>

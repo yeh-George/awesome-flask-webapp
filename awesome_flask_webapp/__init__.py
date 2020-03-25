@@ -4,7 +4,7 @@ import click
 from flask import Flask
 
 from awesome_flask_webapp.settings import config
-from awesome_flask_webapp.extensions import db, bootstrap, login_manager
+from awesome_flask_webapp.extensions import db, bootstrap, login_manager, mail
 from awesome_flask_webapp.blueprints.main import main_bp
 from awesome_flask_webapp.blueprints.auth import auth_bp
 
@@ -35,7 +35,7 @@ def register_extensions(app):
     db.init_app(app)
     bootstrap.init_app(app)
     login_manager.init_app(app)
-
+    mail.init_app(app)
 
 def register_blueprints(app):
     app.register_blueprint(main_bp)
