@@ -86,12 +86,14 @@ class User(db.Model, UserMixin):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
     role = db.relationship('Role', back_populates='users')
-    posts = db.relationship('Post', back_populates='author')
-    comments = db.relationship('Comment', back_populates='author')
-    collections = db.relationship('Collect', back_populates='collector')
-    followings = db.relationship('Follow', foreign_keys=[Follow.follower_id], back_populates='follower', lazy='dynamic')
-    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], back_populates='followed', lazy='dynamic')
-    notifications = db.relationship('Notification', back_populates='receiver')
+    posts = db.relationship('Post', back_populates='author', cascade='all')
+    comments = db.relationship('Comment', back_populates='author', cascade='all')
+    collections = db.relationship('Collect', back_populates='collector', cascade='all')
+    followings = db.relationship('Follow', foreign_keys=[Follow.follower_id], back_populates='follower',
+                                 lazy='dynamic', cascade='all')
+    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], back_populates='followed',
+                                lazy='dynamic', cascade='all')
+    notifications = db.relationship('Notification', back_populates='receiver', cascade='all')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -140,7 +142,7 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     post = db.relationship('Post', back_populates='post')
     # 评论下的回复
-    replies = db.relationship('Comment', back_populates='replied')
+    replies = db.relationship('Comment', back_populates='replied', cascade='all')
     # 回复的评论
     replied_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
     replied = db.relationship('Comment', back_populates='replies', remote_id=[id])
