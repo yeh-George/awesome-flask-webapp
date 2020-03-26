@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from flask import current_app
 from flask_login import UserMixin
 
 from awesome_flask_webapp.extensions import db
@@ -95,11 +95,69 @@ class User(db.Model, UserMixin):
                                 lazy='dynamic', cascade='all')
     notifications = db.relationship('Notification', back_populates='receiver', cascade='all')
 
+    def __init__(self):
+        super.__init__()
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def set_role(self):
+        if self.role is None:
+            if self.email == current_app.config['AWESOME_ADMIN_EMAIL']:
+                self.role = Role.query.filter_by(name='Administrator').first()
+            else:
+                self.role = Role.query.filter_by(name='User').first()
+            db.session.commit()
+
+    def follow(self, user):
+        if not self.is_following(user):
+            follow = Follow(follower=self, followed=user)
+            db.session.add(follow)
+            db.session.commit()
+
+    def unfollow(self, user):
+        # Q1：为什么follow可以使用self.followings.query获取查询对象
+        # 而collect需要使用 Collect.query.with_parent(self)获取查询对象
+        # 因为followings的lazy=‘dynamic’，所以调用self.followings返回查询对象，而一般的关系属性返回的是follow对象的列表
+        # Q2： 为什么要这么设计？
+        follow = self.followings.query.filter_by(followed_id=user.id).first()
+        if follow:
+            db.session.delete(follow)
+            db.session.commit()
+
+    def is_following(self, user):
+        if user.id is None:
+            return False
+        return self.followings.query.filter_by(followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):
+        return self.followers.query.filter_by(follower_id=user.id).first() is not None
+
+    def collect(self, post):
+        if not self.is_collecting(post):
+            collect = Collect(collector=self, collected=post)
+            db.session.add(collect)
+            db.session.commit()
+
+    def uncollect(self, post):
+        collect = Collect.query.with_parent(self).filter_by(collected_id=post.id).first()
+        if collect:
+            db.session.delete(collect)
+            db.session.commit()
+
+    def is_collecting(self, post):
+        return Collect.query.with_parent(self).filter_by(collected_id=post.id).first() is not None
+
+    def can(self, permission_name):
+        permission = Permission.query.filter_by(name=permission_name).first()
+        return permission is not None and permission in self.role.permissions
+
+    @property
+    def is_admin(self):
+        return self.role.name == 'Administrator'
 
 
 tags_posts = db.Table(
@@ -107,6 +165,21 @@ tags_posts = db.Table(
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
     db.Column('post_id', db.Integer, db.ForeignKey('post.id'))
 )
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+
+    posts = db.relationship('Post', back_populates='category')
+
+    def delete(self):
+        default_category = Category.query.get(1)
+        posts = self.posts[:]
+        for post in posts:
+            post.category = default_category
+        db.session.delete(self)
+        db.session.commit()
 
 
 class Tag(db.Model):
@@ -126,6 +199,7 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     author = db.relationship('User', back_populates='posts')
+    category = db.relationship('Category', back_populates='posts')
     tags = db.relationship('Tag', secondary=tags_posts, back_populates='posts')
     comments = db.relationship('Comment', back_populates='post')
     collector = db.relationship('Collect', back_populates='collected')
