@@ -28,3 +28,15 @@ class RegisterForm(FlaskForm):
     def validate_email(self, field):
         if User.query.filter_by(email=field.data.lower()).first():
             raise ValidationError(message='This email has been used.')
+
+
+class ForgetPasswordForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Length(1, 254), Email()])
+    submit = SubmitField()
+
+
+class ResetPasswordForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Length(1, 254), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(1, 128), EqualTo('password_confirm')])
+    password_confirm = PasswordField('Confirm Password', validators=[DataRequired(), Length(1, 128)])
+    submit = SubmitField()

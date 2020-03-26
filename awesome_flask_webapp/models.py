@@ -63,7 +63,7 @@ class Follow(db.Model):
 
 class Collect(db.Model):
     collector_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    collected_id = db.Column(db.Integer, db.ForeignKey('post.id', primary_key=True))
+    collected_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     collector = db.relationship('User', back_populates='collections', lazy='joined') # user
@@ -81,7 +81,10 @@ class User(db.Model, UserMixin):
     bio = db.Column(db.String(255))
     location = db.Column(db.String(50))
     memeber_since = db.Column(db.DateTime, default=datetime.utcnow)
-    confirmed =db.Column(db.Boolean, default=False)
+
+    confirmed = db.Column(db.Boolean, default=False)
+
+    public_collections = db.Column(db.Boolean, default=True)
 
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
@@ -197,12 +200,13 @@ class Post(db.Model):
     can_comment = db.Column(db.Boolean, default=False)
 
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
 
     author = db.relationship('User', back_populates='posts')
     category = db.relationship('Category', back_populates='posts')
     tags = db.relationship('Tag', secondary=tags_posts, back_populates='posts')
     comments = db.relationship('Comment', back_populates='post')
-    collector = db.relationship('Collect', back_populates='collected')
+    collectors = db.relationship('Collect', back_populates='collected')
 
 
 class Comment(db.Model):
@@ -214,12 +218,12 @@ class Comment(db.Model):
     author = db.relationship('User', back_populates='comments')
     # 评论的文章
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
-    post = db.relationship('Post', back_populates='post')
+    post = db.relationship('Post', back_populates='comments')
     # 评论下的回复
     replies = db.relationship('Comment', back_populates='replied', cascade='all')
     # 回复的评论
     replied_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
-    replied = db.relationship('Comment', back_populates='replies', remote_id=[id])
+    replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
 
 
 class Notification(db.Model):
