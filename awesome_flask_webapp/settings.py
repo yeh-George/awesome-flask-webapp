@@ -11,6 +11,10 @@ class Operations(object):
 
 class BaseConfig(object):
     AWESOME_ADMIN_EMAIL = os.getenv('AWESOME_ADMIN_EMAIL', 'yechenjia20@outlook.com')
+    AWESOME_NOTIFICATION_PER_PAGE = 20
+    AWESOME_POST_PER_PAGE = 15
+    AWESOME_COMMENT_PER_PAGE = 15
+
 
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret key')
 

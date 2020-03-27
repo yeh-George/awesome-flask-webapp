@@ -7,6 +7,9 @@ from awesome_flask_webapp.settings import config
 from awesome_flask_webapp.extensions import db, bootstrap, login_manager, mail, ckeditor, moment, csrf
 from awesome_flask_webapp.blueprints.main import main_bp
 from awesome_flask_webapp.blueprints.auth import auth_bp
+from awesome_flask_webapp.fakes import fake_post
+from awesome_flask_webapp.models import User, Post, Comment, Category, Tag, Notification, Collect, Follow
+
 
 def create_app(config_name=None):
     if config_name is None:
@@ -50,7 +53,11 @@ def register_errorhandlers(app):
 
 
 def register_shell_context(app):
-    pass
+    @app.shell_context_processor
+    def make_shell_context():
+        return dict(db=db, User=User, Post=Post, Tag=Tag,
+                    Follow=Follow, Collect=Collect, Comment=Comment,
+                    Notification=Notification)
 
 
 def register_template_context(app):
@@ -64,4 +71,6 @@ def register_commands(app):
         db.create_all()
         click.echo('database initialized.')
 
-
+    @app.cli.command()
+    def forge_post():
+        fake_post()

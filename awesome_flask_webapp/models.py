@@ -197,7 +197,7 @@ class Post(db.Model):
     title = db.Column(db.String(100))
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    can_comment = db.Column(db.Boolean, default=False)
+    can_comment = db.Column(db.Boolean, default=True)
 
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
