@@ -7,8 +7,10 @@ from awesome_flask_webapp.settings import config
 from awesome_flask_webapp.extensions import db, bootstrap, login_manager, mail, ckeditor, moment, csrf
 from awesome_flask_webapp.blueprints.main import main_bp
 from awesome_flask_webapp.blueprints.auth import auth_bp
-from awesome_flask_webapp.fakes import fake_post
-from awesome_flask_webapp.models import User, Post, Comment, Category, Tag, Notification, Collect, Follow
+from awesome_flask_webapp.fakes import (
+    fake_post, fake_admin, fake_user, fake_categories, fake_tag, fake_comment, fake_follow, fake_collect
+)
+from awesome_flask_webapp.models import User, Post, Comment, Category, Tag, Notification, Collect, Follow, Role
 
 
 def create_app(config_name=None):
@@ -69,8 +71,25 @@ def register_commands(app):
     def init_db():
         db.drop_all()
         db.create_all()
+        Role.init_role()
         click.echo('database initialized.')
 
     @app.cli.command()
-    def forge_post():
+    def forge():
+        db.drop_all()
+        db.create_all()
+        Role.init_role()
+
+        print(1)
+        fake_admin()
+        print(1)
+        fake_user()
+        print(1)
+        fake_categories()
+        fake_tag()
         fake_post()
+        print(1)
+        fake_collect()
+        print(1)
+        fake_comment()
+        click.echo('forge done.')

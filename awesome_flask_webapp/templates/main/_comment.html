@@ -1,0 +1,43 @@
+<div class="comments" id="comments">
+    <h3>
+        {{ comments|length }} Comments
+        <small>
+            <a href="{{ url_for('main.show_post', post_id=post.id, page=pagination.pages or 1) }}">latest</a>
+        </small>
+    </h3>
+    <hr>
+    {% if comments %}
+        <ul class="list-group">
+            {% for comment in comments %}
+                <li class="list-group-item ">
+                    <div class="w-100">
+                        <h5 class="mb-1">
+                            <a href="#">{{ comment.author.name }}</a>
+                            {% if comment.author == post.author %}
+                                <span class="badge badge-light">Author</span>
+                            {% endif %}
+                        </h5>
+                        <p>
+                            {% if comment.replied %}
+                                Reply
+                                <a href="#">{{ comment.replied.author.name }}</a>
+                            {% endif %}
+                            {{ comment.body }}
+                        </p>
+                    </div>
+
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="page-footer">
+            {{ render_pagination(pagination) }}
+        </div>
+    {% else %}
+        <div class="tip">
+            <h5>No comment.</h5>
+        </div>
+    {% endif %}
+
+
+
+</div>

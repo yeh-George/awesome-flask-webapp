@@ -80,7 +80,7 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(30))
     bio = db.Column(db.String(255))
     location = db.Column(db.String(50))
-    memeber_since = db.Column(db.DateTime, default=datetime.utcnow)
+    member_since = db.Column(db.DateTime, default=datetime.utcnow)
 
     confirmed = db.Column(db.Boolean, default=False)
 
@@ -98,8 +98,11 @@ class User(db.Model, UserMixin):
                                 lazy='dynamic', cascade='all')
     notifications = db.relationship('Notification', back_populates='receiver', cascade='all')
 
-    def __init__(self):
-        super.__init__()
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        self.follow(self)  # follow self
+        self.set_role()
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -134,10 +137,10 @@ class User(db.Model, UserMixin):
     def is_following(self, user):
         if user.id is None:
             return False
-        return self.followings.query.filter_by(followed_id=user.id).first() is not None
+        return self.followings.filter_by(followed_id=user.id).first() is not None
 
     def is_followed_by(self, user):
-        return self.followers.query.filter_by(follower_id=user.id).first() is not None
+        return self.followers.filter_by(follower_id=user.id).first() is not None
 
     def collect(self, post):
         if not self.is_collecting(post):
