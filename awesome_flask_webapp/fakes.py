@@ -6,7 +6,7 @@ from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
 from awesome_flask_webapp.extensions import db
-from awesome_flask_webapp.models import User, Post, Tag, Comment, Notification, Category
+from awesome_flask_webapp.models import User, Post, Tag, Comment, Notification, Category, Link
 
 fake = Faker()
 
@@ -111,4 +111,13 @@ def fake_comment(count=100):
             post=Post.query.get(random.randint(1, Post.query.count()))
         )
         db.session.add(comment)
+    db.session.commit()
+
+
+def fake_link():
+    twitter = Link(name='Twitter', url='#')
+    facebook = Link(name='Facebook', url='#')
+    linkedin = Link(name='LinkedIn', url='#')
+    google = Link(name='Google+', url='#')
+    db.session.add_all([twitter, facebook, linkedin, google])
     db.session.commit()

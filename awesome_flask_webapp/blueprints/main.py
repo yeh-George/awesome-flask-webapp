@@ -20,49 +20,6 @@ def index():
     return render_template('main/index.html', pagination=pagination, posts=posts)
 
 
-@main_bp.route('/about')
-def about():
-    return render_template('main/about.html')
-
-
-@main_bp.route('/notifications')
-@login_required
-def show_notifications():
-    page = request.args.get('page', 1, type=int)
-    per_page = current_app.config['AWESOME_NOTIFICATION_PER_PAGE']
-    notifications = Notification.query.with_parent(current_user)
-    filter_rule = request.args.get('filter')
-    if filter_rule == 'unread':
-        notifications = notifications.filter_by(is_read=False)
-
-    pagination = notifications.order_by(Notification.timestamp.desc()).paginate(page, per_page)
-    notifications = pagination.items
-    return render_template('main/notifications.html', pagination=pagination, notifications=notifications)
-
-
-@main_bp.route('/notification/read/<int:notification_id>')
-@login_required
-def read_notification(notification_id):
-    notification = Notification.query.get_or_404(notification_id)
-    if current_user != notification.receiver:
-        abort(403)
-
-    notification.is_read = True
-    db.session.commit()
-    flash('Notification read.', 'success')
-    return redirect(url_for('.show_notifications'))
-
-
-@main_bp.route('/notification/read/all')
-@login_required
-def read_all_notifications():
-    for notification in current_user.notifications:
-        notification.is_read = True
-    db.session.commit()
-    flash('All notifications read.', 'success')
-    return redirect(url_for('.show_notifications'))
-
-
 @main_bp.route('/post/<int:post_id>')
 def show_post(post_id):
     post = Post.query.get_or_404(post_id)
@@ -75,7 +32,6 @@ def show_post(post_id):
 
     return render_template('main/post.html', pagination=pagination, post=post, comments=comments,
                            comment_form=comment_form)
-
 
 
 @main_bp.route('/reply/comment/<int:comment_id>')
@@ -118,5 +74,49 @@ def show_category(category_id):
 @main_bp.route('/tag/<int:tag_id>')
 def show_tag(tag_id):
     pass
+
+
+
+@main_bp.route('/about')
+def about():
+    return render_template('main/about.html')
+
+
+@main_bp.route('/notifications')
+@login_required
+def show_notifications():
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['AWESOME_NOTIFICATION_PER_PAGE']
+    notifications = Notification.query.with_parent(current_user)
+    filter_rule = request.args.get('filter')
+    if filter_rule == 'unread':
+        notifications = notifications.filter_by(is_read=False)
+
+    pagination = notifications.order_by(Notification.timestamp.desc()).paginate(page, per_page)
+    notifications = pagination.items
+    return render_template('main/notifications.html', pagination=pagination, notifications=notifications)
+
+
+@main_bp.route('/notification/read/<int:notification_id>')
+@login_required
+def read_notification(notification_id):
+    notification = Notification.query.get_or_404(notification_id)
+    if current_user != notification.receiver:
+        abort(403)
+
+    notification.is_read = True
+    db.session.commit()
+    flash('Notification read.', 'success')
+    return redirect(url_for('.show_notifications'))
+
+
+@main_bp.route('/notification/read/all')
+@login_required
+def read_all_notifications():
+    for notification in current_user.notifications:
+        notification.is_read = True
+    db.session.commit()
+    flash('All notifications read.', 'success')
+    return redirect(url_for('.show_notifications'))
 
 
