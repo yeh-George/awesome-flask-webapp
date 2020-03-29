@@ -10,6 +10,8 @@
         <small>
             Comments: <a href="{{ url_for('main.show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a>
             &nbsp;&nbsp;
+            Collectors: <a href="{{ url_for('main.show_collectors', post_id=post.id) }}">{{ post.collectors|length }}</a>
+            &nbsp;&nbsp;
             Category: <a href="#">default</a>
             <span class="float-right">
                 Author: <a href="#">Author Name</a>&nbsp;&nbsp;

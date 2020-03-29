@@ -3,7 +3,8 @@ from flask import Blueprint, render_template, url_for, request, flash, current_a
 from flask_login import login_required, current_user
 
 from awesome_flask_webapp.utils import redirect_back
-from awesome_flask_webapp.models import Notification, Post, Comment
+from awesome_flask_webapp.decorators import confirm_required, permission_required
+from awesome_flask_webapp.models import Notification, Post, Comment, Category, Tag, Collect, Follow
 from awesome_flask_webapp.extensions import db
 from awesome_flask_webapp.forms.main import CommentForm
 
@@ -34,52 +35,114 @@ def show_post(post_id):
                            comment_form=comment_form)
 
 
-@main_bp.route('/reply/comment/<int:comment_id>')
+@main_bp.route('/post/<int:post_id>/set-comment', methods=['POST'])
 @login_required
-def reply_comment(comment_id):
-    pass
+def set_comment(post_id):
+    post = Post.query.get_or_404(post_id)
+    if current_user != post.author:
+        abort(403)
 
-
-@main_bp.route('/delete/comment/<int:comment_id>')
-@login_required
-def delete_comment(comment_id):
-    pass
+    if post.can_comment:
+        post.can_comment = False
+        flash('Post comment disabled.', 'info')
+    else:
+        post.can_comment = True
+        flash('Post comment enabled.', 'info')
+    db.session.commit()
+    return redirect(url_for('main.show_post', post_id=post_id))
 
 
 @main_bp.route('/post/<int:post_id>/comment/new', methods=["POST"])
+@login_required
+@permission_required('COMMENT')
 def new_comment(post_id):
-    pass
+    post = Post.query.get_or_404(post_id)
+    page = request.args.get('page', 1, type=int)
+    form = CommentForm()
+
+    if form.validate_on_submit():
+        body = form.body.data
+        author = current_user._get_current_object()
+        comment = Comment(body=body, author=author, post=post)
+
+        replied_id = request.args.get('reply')
+        if replied_id:
+            comment.replied = Comment.query.get_or_404(replied_id)
+        db.session.add(comment)
+        db.session.commit()
+        flash("Comment published.", 'success')
+
+    flash('Invalid comment.', 'warning')
+    return redirect(url_for('main.show_post', post_id=post.id, page=page))
+
+
+@main_bp.route('/reply/comment/<int:comment_id>')
+@login_required
+@permission_required('COMMENT')
+def reply_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    return redirect(url_for('main.show_post', post_id=comment.post_id, reply=comment_id, author=comment.author.name)
+                    + '#confirm-form')
+
+
+@main_bp.route('/delete/comment/<int:comment_id>', methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    if current_user != comment.author and current_user != comment.post.author and not current_user.can('MODERATE'):
+        abort(403)
+    db.session.delete(comment)
+    db.session.commit()
+    flash('Comment deleted.', 'info')
+    return redirect(url_for('main.show_post', post_id=comment.post_id) + '#comments')
 
 
 @main_bp.route('/collect/<int:post_id>', methods=['POST'])
+@login_required
+@confirm_required
+@permission_required('COLLECT')
 def collect(post_id):
-    pass
+    post = Post.query.get_or_404(post_id)
+    if current_user.is_collecting(post):
+        flash('Already collecting', 'info')
+        return redirect(url_for('main.show_post', post_id=post_id))
+
+    current_user.collect(post)
+    flash('Post collected.', 'success')
+    return redirect(url_for('main.show_post', post_id=post_id))
 
 
 @main_bp.route('/uncollect/<int:post_id>', methods=['POST'])
+@login_required
 def uncollect(post_id):
-    pass
+    post = Post.query.get_or_404(post_id)
+    if not current_user.is_collecting(post):
+        flash('Not collecting.', 'info')
+        return redirect(url_for('main.show_post', post_id=post.id))
+
+    current_user.uncollect(post)
+    flash('Post uncollected.', 'success')
+    return redirect(url_for('main.show_post', post_id=post_id))
 
 
 @main_bp.route('/post/<int:post_id>/collectors')
 def show_collectors(post_id):
-    pass
+    post = Post.query.get_or_404(post_id)
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['AWESOME_USER_PER_PAGE']
+    pagination = Collect.query.with_parent(post).order_by(Collect.timestamp.desc()).paginate(page, per_page)
+    collects = pagination.items
+    return render_template('main/collectors.html', pagination=pagination, collects=collects, post=post)
 
 
 @main_bp.route('/category/<int:category_id>')
 def show_category(category_id):
-    pass
-
-
-@main_bp.route('/tag/<int:tag_id>')
-def show_tag(tag_id):
-    pass
-
-
-
-@main_bp.route('/about')
-def about():
-    return render_template('main/about.html')
+    category = Category.query.get_or_404(category_id)
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['AWESOME_POST_PER_PAGE']
+    pagination = Post.query.with_parent(category).order_by(Post.timestamp.desc()).paginate(page, per_page)
+    posts = pagination.items
+    return render_template('main/category.html', pagination=pagination, posts=posts, category=category)
 
 
 @main_bp.route('/notifications')
@@ -119,4 +182,8 @@ def read_all_notifications():
     flash('All notifications read.', 'success')
     return redirect(url_for('.show_notifications'))
 
+
+@main_bp.route('/about')
+def about():
+    return render_template('main/about.html')
 

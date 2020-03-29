@@ -18,6 +18,30 @@
             {{ post.body|safe }}
             <hr>
             <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#shareModal">Share</button>
+            {% if current_user.is_authenticated %}
+                {% if current_user.is_collecting(post) %}
+                    <form class="inline" method="post" action="{{ url_for('main.uncollect', post_id=post.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">
+                            <span class="oi oi-x"></span> Uncollect
+                        </button>
+                    </form>
+                {% else%}
+                    <form class="inline" method="post" action="{{ url_for('main.collect', post_id=post.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                        <span class="oi oi-star"></span> Collect
+                        </button>
+                    </form>
+                {% endif%}
+            {% else %}
+                <form class="inline" method="post" action="{{ url_for('main.collect', post_id=post.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-secondary btn-sm">
+                        <span class="oi oi-star"></span> Collect
+                    </button>
+                </form>
+            {% endif %}
 
             {% include 'main/_comment.html' %}
         </div>

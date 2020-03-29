@@ -4,6 +4,16 @@
         <small>
             <a href="{{ url_for('main.show_post', post_id=post.id, page=pagination.pages or 1) }}">latest</a>
         </small>
+
+        {% if current_user == post.author %}
+            <form class="inline" method="post" action="{{ url_for('main.set_comment', post_id=post.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-outline-primary  float-right">
+                    {% if post.can_comment %}Disable{% else %}Enable{% endif %} Comment
+                </button>
+            </form>
+
+        {% endif %}
     </h3>
     <hr>
     {% if comments %}
@@ -59,7 +69,7 @@
             {% endfor %}
         </div>
         <div class="page-footer">
-            {{ render_pagination(pagination) }}
+            {{ render_pagination(pagination, align='center', size='sm') }}
         </div>
     {% else %}
         <div class="tip">
