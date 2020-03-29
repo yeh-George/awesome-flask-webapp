@@ -78,6 +78,23 @@ def show_post(post_id):
 
 
 
+@main_bp.route('/reply/comment/<int:comment_id>')
+@login_required
+def reply_comment(comment_id):
+    pass
+
+
+@main_bp.route('/delete/comment/<int:comment_id>')
+@login_required
+def delete_comment(comment_id):
+    pass
+
+
+@main_bp.route('/post/<int:post_id>/comment/new', methods=["POST"])
+def new_comment(post_id):
+    pass
+
+
 @main_bp.route('/collect/<int:post_id>', methods=['POST'])
 def collect(post_id):
     pass
@@ -101,4 +118,5 @@ def show_category(category_id):
 @main_bp.route('/tag/<int:tag_id>')
 def show_tag(tag_id):
     pass
+
 

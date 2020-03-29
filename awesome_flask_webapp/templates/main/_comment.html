@@ -7,28 +7,57 @@
     </h3>
     <hr>
     {% if comments %}
-        <ul class="list-group">
+        <div class="comment">
             {% for comment in comments %}
-                <li class="list-group-item ">
-                    <div class="w-100">
-                        <h5 class="mb-1">
-                            <a href="#">{{ comment.author.name }}</a>
-                            {% if comment.author == post.author %}
-                                <span class="badge badge-light">Author</span>
-                            {% endif %}
-                        </h5>
-                        <p>
-                            {% if comment.replied %}
-                                Reply
-                                <a href="#">{{ comment.replied.author.name }}</a>
-                            {% endif %}
-                            {{ comment.body }}
-                        </p>
-                    </div>
+                <div class="comment-body">
+                    <h6>
+                        <a href="#">{{ comment.author.name }}</a>
+                        {% if comment.author == post.author %}
+                            <span class="badge badge-light">Author</span>
+                        {% endif %}
+                         &nbsp;&nbsp;
+                        <small data-toggle="tooltip" data-placement="top" data-timestamp="{{ comment.timestamp }}"
+                               data-delay="250">
+                            {{ moment(comment.timestamp).fromNow(refresh=True) }}
+                        </small>
+                        {% if current_user.is_authenticated %}
+                            <span class="float-right">
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-sm btn-light" data-toggle="dropdown">
+                                        <span class="oi oi-ellipses"></span>
+                                    </button>
 
-                </li>
+                                    <span class="dropdown-menu">
+                                        {% if comment.author != current_user %}
+                                            <a class="dropdown-item btn-sm"
+                                               href="{{ url_for('main.reply_comment', comment_id=comment.id) }}">
+                                                <span class="oi oi-comment-square"></span> Reply
+                                            </a>
+                                        {% endif %}
+                                        {% if current_user == comment.author or current_user == post.author or
+                                                current_user.can('MODERATE') %}
+                                            <a class="dropdown-item btn-sm" data-toggle="modal" href="#!"
+                                               data-href="{{ url_for('main.delete_comment', comment_id=comment.id) }}"
+                                                data-target="#confirm-delete">
+                                                <span class="oi oi-trash"></span>Delete
+                                            </a>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </span>
+                        {% endif %}
+                    </h6>
+                    <p>
+                        {% if comment.replied %}
+                            Reply
+                            <a href="#">{{ comment.replied.author.name }}</a>:
+                        {% endif %}
+                        {{ comment.body }}
+                    </p>
+                </div>
+                <hr>
             {% endfor %}
-        </ul>
+        </div>
         <div class="page-footer">
             {{ render_pagination(pagination) }}
         </div>
@@ -38,6 +67,38 @@
         </div>
     {% endif %}
 
-
-
+    {% if post.can_comment %}
+        {% if current_user.is_authenticated %}
+            {% if current_user.can('COMMENT') %}
+                {% if request.args.get('reply') %}
+                    <div class="alert alert-dark">
+                        Reply to: {{ request.args.get('author') }}
+                        <a class="float-right" href="{{ url_for('main.show_post', post_id=post.id) }}">Cancel</a>
+                    </div>
+                {% endif %}
+                <div class="comment-form-area">
+                    <div class="comment-form-thumbnail">
+                        {{ current_user.username }}
+                    </div>
+                    <div class="comment-form" id="comment-form">
+                        {{ render_form(
+                            comment_form,
+                            action=url_for('main.new_comment', post_id=post.id, page=pagination.pages or 1,
+                                            reply=request.args.get('reply')),
+                            extra_classes="text-right" ) }}
+                    </div>
+                </div>
+            {% else %}
+                <p class="tip">No permission to comment.</p>
+            {% endif %}
+        {% else %}
+            <p class="tip">
+                <a href="{{ url_for('auth.login') }}">Login</a>
+                or
+                <a href="{{ url_for('auth.register') }}">Register</a> to comment.
+            </p>
+        {% endif %}
+    {% else %}
+        <p class="tip">Comment disabled.</p>
+    {% endif %}
 </div>
