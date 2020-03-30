@@ -78,7 +78,9 @@
             </div>
         {% endfor %}
     <div class="page-footer">
+        {% if pagination.pages > 1 %}
             {{ render_pagination(pagination, align='center', size='sm') }}
+        {% endif %}
         </div>
     {% else %}
         <div class="tip">

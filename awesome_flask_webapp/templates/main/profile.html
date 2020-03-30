@@ -16,14 +16,36 @@
     </div>
     <p class="card-text">
         <a href="{{ url_for('user.index', user_id=user.id) }}">
-            <strong>{{ user.post|length }}</strong> Posts
+            <strong>{{ user.posts|length }}</strong> Posts
         </a>&nbsp;
-        <a href="#">
+        <a href="{{ url_for('user.show_followers', user_id=user.id) }}">
             <strong id="followers-count-{{ user.id }}"
-                    data-href="#">
+                    data-href="{{ url_for('ajax.followers_count', user_id=user.id) }}">
                 {{ user.followers.count() - 1 }}
             </strong> Followers
         </a>
     </p>
-    <a href="{{ url_for('user.index', user_id=user.id) }}" class="btn btn-outline-primary btn-sm">Homepage</a>
+    <span>
+        <a href="{{ url_for('user.index', user_id=user.id) }}" class="btn btn-primary btn-sm">Homepage</a>
+        {% if current_user.is_authenticated %}
+            {% if user != current_user %}
+                <button data-id="{{ user.id }}"
+                        data-href="{{ url_for('ajax.unfollow', username=user.username) }}"
+                        class="{% if not current_user.is_following(user) %}hide{% endif %} btn btn-dark btn-sm unfollow-btn">
+                    Unfollow
+                </button>
+                <button data-id="{{ user.id }}"
+                        data-href="{{ url_for('ajax.follow', username=user.username) }}"
+                        class="{% if current_user.is_following(user) %}hide{% endif %} btn btn-primary btn-sm follow-btn">
+                    Follow
+                </button>
+            {% endif %}
+        {% else %}
+            <form class="inline" method="post"
+                  action="{{ url_for('user.follow', user_id=user.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+            </form>
+        {% endif %}
+    </span>
 </div>

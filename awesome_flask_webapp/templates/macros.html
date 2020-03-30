@@ -5,7 +5,7 @@
                  src="{{ url_for('main.get_avatar', filename=user.avatar_m) }}" alt="{{ user.username }}">
         </a>
         <h6>
-            <a href="{{ url_for('user.index', username=user.username) }}">{{ user.username }}</a>
+            <a href="{{ url_for('user.index', user_id=user.id) }}">{{ user.username }}</a>
         </h6>
         {{ follow_area(user) }}
     </div>
@@ -16,7 +16,7 @@
         {% if current_user != user %}
             {% if current_user.is_following(user) %}
                 <form class="inline" method="post"
-                  action="#">
+                  action="{{ url_for('user.unfollow', user_id=user.id, next=request.full_path) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-dark btn-sm">Unfollow</button>
                     {% if current_user.is_followed_by(user) %}
@@ -25,7 +25,7 @@
                 </form>
             {% else %}
                 <form class="inline" method="post"
-                      action="#">
+                      action="{{ url_for('user.follow', user_id=user.id, next=request.full_path) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-primary btn-sm">Follow</button>
                     {% if current_user.is_followed_by(user) %}

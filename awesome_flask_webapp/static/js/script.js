@@ -98,6 +98,53 @@ $(function () {
         $('.delete-form').attr('action', $(e.relatedTarget).data('href'));
     });
 
-    $("[data-toggle='tooltip']").tooltip({title: moment($(this).data('timestamp')).format('lll')})
+    $("[data-toggle='tooltip']").tooltip({title: moment($(this).data('timestamp')).format('lll')});
+
+    function unfollow(e) {
+        var $el = $(e.target);
+        var id = $el.data('id');
+
+        $.ajax({
+            type: "POST",
+            url: $el.data('href'),
+            success: function(data) {
+                $el.next().show();
+                $el.hide();
+                update_followers_count(id);
+                toast(data.message);
+            }
+        });
+    }
+
+    function follow(e) {
+        var $el = $(e.target);
+        var id = $el.data('id');
+
+        $.ajax({
+            type: "POST",
+            url: $el.data('href'),
+            success: function(data) {
+                $el.prev().show();
+                $el.hide();
+                update_followers_count(id);
+                toast(data.message);
+            }
+        });
+    }
+
+    $(document).on('click', '.unfollow-btn', unfollow.bind(this));
+    $(document).on('click', '.follow-btn', follow.bind(this));
+
+    function update_followers_count(id) {
+        var $el = $('#followers-count-' + id);
+        $.ajax({
+            type: 'GET',
+            url: $el.data('href'),
+            success: function (data) {
+                $el.text(data.count);
+            }
+        });
+    }
+
 
 });

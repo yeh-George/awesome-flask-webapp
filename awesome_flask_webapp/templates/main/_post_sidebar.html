@@ -1,0 +1,31 @@
+{% from 'macros.html' import follow_area with context %}
+
+<div class="card bg-light mb-3 w-100 sidebar-card">
+    <div class="card-body">
+        <div class="row">
+            <a href="{{ url_for('user.index', user_id=post.author.id) }}">
+                <img class="sidebar-avatar rounded avatar-m"
+                     src="{{ url_for('main.get_avatar', filename=post.author.avatar_m) }}">
+            </a>
+
+            <div class="sidebar-profile ">
+                <h6 class="card-title">
+                    <a href="{{ url_for('user.index', user_id=post.author.id) }}">
+                               {{ post.author.name }}
+                        </span>
+                    </a>
+                </h6>
+                <a class="card-subtitle mb-2 btn btn-primary btn-sm"
+                   href="{{ url_for('user.index', user_id=post.author.id) }}">
+                    <span class="oi oi-home"></span> home
+                </a>
+                {{ follow_area(post.author) }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card bg-light mb-3 w-100">
+    <div class="card-body">
+        {% include 'main/_sidebar.html' %}
+    </div>
+</div>

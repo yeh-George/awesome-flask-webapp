@@ -5,16 +5,16 @@
 {% block title %} {{ post.title }} {% endblock %}
 
 {% block content %}
-    <div class="page-header">
-        <h1>{{ post.title }}</h1>
-        <small>
-            Category: <a href="#">default</a>&nbsp;&nbsp;
-            Date: {{ moment(post.timestamp).format('LL') }}
-        </small>
-    </div>
-
     <div class="row">
         <div class="col-sm-9">
+            <div class="page-header">
+                <h1>{{ post.title }}</h1>
+                <small>
+                    Category: <a href="#">default</a>&nbsp;&nbsp;
+                    Date: {{ moment(post.timestamp).format('LL') }}
+                </small>
+            </div>
+
             {{ post.body|safe }}
             <hr>
             <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#shareModal">Share</button>
@@ -45,8 +45,8 @@
 
             {% include 'main/_comment.html' %}
         </div>
-        <div class="col-sm-2 ml-auto">
-            {% include 'main/_sidebar.html' %}
+        <div class="col-sm-3 ml-auto">
+            {% include 'main/_post_sidebar.html' %}
         </div>
     </div>
 
