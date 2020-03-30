@@ -8,6 +8,7 @@ from awesome_flask_webapp.extensions import db, bootstrap, login_manager, mail, 
 from awesome_flask_webapp.blueprints.main import main_bp
 from awesome_flask_webapp.blueprints.auth import auth_bp
 from awesome_flask_webapp.blueprints.user import user_bp
+from awesome_flask_webapp.blueprints.ajax import ajax_bp
 from awesome_flask_webapp.fakes import (
     fake_post, fake_admin, fake_user, fake_categories, fake_tag, fake_comment, fake_follow, fake_collect, fake_link
 )
@@ -52,6 +53,7 @@ def register_blueprints(app):
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(ajax_bp)
 
 
 def register_errorhandlers(app):

@@ -4,7 +4,6 @@
         <small>
             <a href="{{ url_for('main.show_post', post_id=post.id, page=pagination.pages or 1) }}">latest</a>
         </small>
-
         {% if current_user == post.author %}
             <form class="inline" method="post" action="{{ url_for('main.set_comment', post_id=post.id) }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -20,14 +19,18 @@
         {% for comment in comments %}
             <div class="comment">
                 <div class="comment-thumbnail">
-                    <a href="{{ url_for('user.index', username=comment.author.username) }}">
-                        <img class="rounded avatar-s"
+                    <a href="{{ url_for('user.index', user_id=comment.author.id) }}">
+                        <img class="rounded avatar-s profile-popover"
+                             data-href="{{ url_for('ajax.get_profile', user_id=comment.author.id) }}"
                             src="{{ url_for('main.get_avatar', filename=comment.author.avatar_m) }}">
                     </a>
                 </div>
                 <div class="comment-body">
                     <h6>
-                        <a href="#">{{ comment.author.name }}</a>
+                        <a class="profile-popover" href="{{ url_for('user.index', user_id=comment.author.id) }}"
+                           data-href="{{ url_for('ajax.get_profile', user_id=comment.author.id) }}">
+                            {{ comment.author.name }}
+                        </a>
                         {% if comment.author == post.author %}
                             <span class="badge badge-light">Author</span>
                         {% endif %}
