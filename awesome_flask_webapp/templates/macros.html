@@ -1,6 +1,6 @@
 {% macro user_card(user) %}
     <div class="user-card text-center">
-        <a href="{{ url_for('user.index', username=user.username) }}">
+        <a href="{{ url_for('user.index', user_id=user.id) }}">
             <img class="rounded avatar-m"
                  src="{{ url_for('main.get_avatar', filename=user.avatar_m) }}" alt="{{ user.username }}">
         </a>

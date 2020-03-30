@@ -26,7 +26,7 @@
         </a>
     </p>
     <span>
-        <a href="{{ url_for('user.index', user_id=user.id) }}" class="btn btn-primary btn-sm">Homepage</a>
+        <a href="{{ url_for('user.index', user_id=user.id) }}" class="btn btn-primary btn-sm">Home</a>
         {% if current_user.is_authenticated %}
             {% if user != current_user %}
                 <button data-id="{{ user.id }}"

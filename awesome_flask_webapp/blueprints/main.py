@@ -21,6 +21,12 @@ def index():
     return render_template('main/index.html', pagination=pagination, posts=posts)
 
 
+@main_bp.route('/post/new', methods=['GET', 'POST'])
+def new_post():
+    pass
+
+
+
 @main_bp.route('/post/<int:post_id>')
 def show_post(post_id):
     post = Post.query.get_or_404(post_id)

@@ -1,0 +1,44 @@
+ {% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}{{ user.name }}{% endblock %}
+
+{% block content %}
+    {% include 'user/_header.html' %}
+
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            {% if collects %}
+                {% for collect in collects %}
+                    <h3 class="text-primary">
+                        <a href="{{ url_for('main.show_post', post_id=collect.collected.id) }}">{{ collect.collected.title }}</a>
+                    </h3>
+                    <p>
+                        {{ collect.collected.body|striptags|truncate }}
+                        <small><a href="{{ url_for('main.show_post', post_id=collect.collected.id) }}">Read More</a></small>
+                    </p>
+                    <small>
+                        <span class="float-right">
+                             {{ moment(collect.collected.timestamp).format('LL') }}
+                         </span>
+                    </small>
+                    {% if not loop.last %}
+                        <br>
+                        <hr>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="tip text-center">
+                    <h3>No collection.</h3>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if posts %}
+        <div class="page-footer">
+            {% if pagination.pages > 1 %}
+                {{ render_pagination(pagination, align='center') }}
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

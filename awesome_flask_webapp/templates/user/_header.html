@@ -1,0 +1,37 @@
+{% from 'macros.html' import follow_area with context %}
+{% from 'bootstrap/nav.html' import render_nav_item %}
+
+<div class="row">
+    <div class="col-md-3">
+        <img class="img-fluid rounded  avatar-l" src="{{ url_for('main.get_avatar', filename=user.avatar_l) }}">
+    </div>
+    <div class="col-md-9">
+        <h1>{{ user.name }}
+            <small class="text-muted">{{ user.username }}</small>
+        </h1>
+        {% if user.bio %}
+            <p>{{ user.bio }}</p>
+        {% endif %}
+        <p>
+            {% if user.location %}
+                <span class="oi oi-map-marker"></span>
+                <a href="https://map.baidu.com/search/{{ user.location }}"
+                   target="_blank">{{ user.location|truncate(30) }}</a>&nbsp;&nbsp;
+            {% endif %}
+            <span class="oi oi-calendar"></span>
+            {{ moment(user.member_since).format('LL') }}
+        </p>
+
+        <div class="float-right">
+            {{ follow_area(user) }}
+        </div>
+    </div>
+</div>
+<div class="user-nav">
+    <ul class="nav nav-tabs">
+        {{ render_nav_item('user.index', 'Post', user.posts|length, user_id=user.id) }}
+        {{ render_nav_item('user.show_collections', 'Collections', user.collections|length, user_id=user.id) }}
+        {{ render_nav_item('user.show_followings', 'Followings', user.followings.count() - 1, user_id=user.id) }}
+        {{ render_nav_item('user.show_followers', 'Followers', user.followers.count() - 1, user_id=user.id) }}
+    </ul>
+</div>
