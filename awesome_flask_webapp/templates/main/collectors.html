@@ -8,15 +8,15 @@
     <div class="page-header">
         <div class="row">
             <div class="col-md-12">
-                <a class="btn btn-default btn-sm" href="{{ url_for('main.show_post', post_id=post.id) }}">
-                    <span class="oi oi-arrow-left" aria-hidden="true"></span> Return
+                <a class="btn btn-outline-primary" href="{{ url_for('main.show_post', post_id=post.id) }}">
+                    <span class="oi oi-arrow-circle-left" aria-hidden="true"></span> Go Back
                 </a>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <h3>{{ post.collectors|length }} Collectors</h3>
+            <h4 style="color:blue">{{ post.collectors|length }} Collectors</h4>
             {% for collect in collects %}
                 {{ user_card(user=collect.collector) }}
             {% endfor %}

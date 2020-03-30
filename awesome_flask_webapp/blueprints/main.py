@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, request, flash, current_app, abort, redirect
+from flask import Blueprint, render_template, url_for, request, flash, current_app, abort, redirect, send_from_directory
 
 from flask_login import login_required, current_user
 
@@ -181,6 +181,11 @@ def read_all_notifications():
     db.session.commit()
     flash('All notifications read.', 'success')
     return redirect(url_for('.show_notifications'))
+
+
+@main_bp.route('/avatar/<path:filename>')
+def get_avatar(filename):
+    return send_from_directory(current_app.config['AVATARS_SAVE_PATH'], filename)
 
 
 @main_bp.route('/about')

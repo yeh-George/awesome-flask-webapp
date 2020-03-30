@@ -4,9 +4,10 @@ import click
 from flask import Flask
 
 from awesome_flask_webapp.settings import config
-from awesome_flask_webapp.extensions import db, bootstrap, login_manager, mail, ckeditor, moment, csrf
+from awesome_flask_webapp.extensions import db, bootstrap, login_manager, mail, ckeditor, moment, csrf, avatars
 from awesome_flask_webapp.blueprints.main import main_bp
 from awesome_flask_webapp.blueprints.auth import auth_bp
+from awesome_flask_webapp.blueprints.user import user_bp
 from awesome_flask_webapp.fakes import (
     fake_post, fake_admin, fake_user, fake_categories, fake_tag, fake_comment, fake_follow, fake_collect, fake_link
 )
@@ -44,10 +45,13 @@ def register_extensions(app):
     ckeditor.init_app(app)
     moment.init_app(app)
     csrf.init_app(app)
+    avatars.init_app(app)
+
 
 def register_blueprints(app):
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(user_bp)
 
 
 def register_errorhandlers(app):

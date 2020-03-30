@@ -16,7 +16,6 @@ class BaseConfig(object):
     AWESOME_COMMENT_PER_PAGE = 15
     AWESOME_NOTIFICATION_PER_PAGE = 20
 
-
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret key')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -29,6 +28,11 @@ class BaseConfig(object):
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = ('Ye Chenjia', MAIL_USERNAME)
+
+    # avatar
+    AVATARS_SAVE_PATH = os.path.join(basedir, 'avatars')
+    AVATARS_SIZE_TUPLE = (30, 100, 200)
+
 
 
 class DevelopmentConfig(BaseConfig):
