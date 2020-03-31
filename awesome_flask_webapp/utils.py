@@ -46,6 +46,13 @@ def validate_token(user, operation, token):
 
     if operation == Operations.CONFIRM:
         user.confirmed = True
+    elif operation == Operations.CHANGE_EMAIL:
+        new_email = data.get('new_email')
+        if new_email is None:
+            return False
+        if User.query.filter_by(email=new_email).first():
+            return False
+        user.email = new_email
     else:
         return False
 

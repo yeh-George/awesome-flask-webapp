@@ -29,7 +29,7 @@
                 {% endfor %}
             {% else %}
                 <div class="tip text-center">
-                    <h3>No photos.</h3>
+                    <h3>No post.</h3>
                     {% if user == current_user %}
                         <a class="btn btn-link" href="{{ url_for('main.new_post') }}">Create New Post.</a>
                     {% endif %}

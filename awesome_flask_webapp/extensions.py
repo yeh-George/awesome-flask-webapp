@@ -21,6 +21,10 @@ login_manager.login_view = 'auth.login'
 login_manager.login_message = 'login'
 login_manager.login_message_category = 'warning'
 
+login_manager.refresh_view = 'auth.re_authenticate'
+login_manager.needs_refresh_message = 'Need reauthenticate account.'
+login_manager.needs_refresh_message_category = 'warning'
+
 
 @login_manager.user_loader
 def load_user(user_id):

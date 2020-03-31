@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import login_user, logout_user, login_required, current_user, login_fresh, confirm_login
 
 from awesome_flask_webapp.settings import Operations
 from awesome_flask_webapp.extensions import db
@@ -83,4 +83,19 @@ def logout():
     logout_user()
     flash('Logout success.', 'info')
     return redirect(url_for('main.index'))
+
+
+@auth_bp.route('/re-authenticate', methods=['GET', 'POST'])
+@login_required
+def re_authenticate():
+    if login_fresh():
+        return redirect(url_for('main.index'))
+
+    form = LoginForm()
+    if form.validate_on_submit() and current_user.validate_password(form.password.data):
+        confirm_login()
+        return redirect_back()
+
+    return render_template('auth/login.html', form=form)
+
 

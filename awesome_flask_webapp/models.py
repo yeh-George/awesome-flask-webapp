@@ -135,7 +135,7 @@ class User(db.Model, UserMixin):
         # 而collect需要使用 Collect.query.with_parent(self)获取查询对象
         # 因为followings的lazy=‘dynamic’，所以调用self.followings返回查询对象，而一般的关系属性返回的是follow对象的列表
         # Q2： 为什么要这么设计？
-        follow = self.followings.query.filter_by(followed_id=user.id).first()
+        follow = self.followings.filter_by(followed_id=user.id).first()
         if follow:
             db.session.delete(follow)
             db.session.commit()

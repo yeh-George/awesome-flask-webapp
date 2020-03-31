@@ -7,7 +7,7 @@ from flask_login import current_user
 def confirm_required(func):
     @wraps(func)
     def decorated_func(*args, **kwargs):
-        if current_user.confirmed:
+        if not current_user.confirmed:
             message = Markup(
                 'Please confirm your account first.'
                 'Not receive the confirm email?'

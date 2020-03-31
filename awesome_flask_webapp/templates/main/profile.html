@@ -30,12 +30,12 @@
         {% if current_user.is_authenticated %}
             {% if user != current_user %}
                 <button data-id="{{ user.id }}"
-                        data-href="{{ url_for('ajax.unfollow', username=user.username) }}"
+                        data-href="{{ url_for('ajax.unfollow', user_id=user.id) }}"
                         class="{% if not current_user.is_following(user) %}hide{% endif %} btn btn-dark btn-sm unfollow-btn">
                     Unfollow
                 </button>
                 <button data-id="{{ user.id }}"
-                        data-href="{{ url_for('ajax.follow', username=user.username) }}"
+                        data-href="{{ url_for('ajax.follow', user_id=user.id) }}"
                         class="{% if current_user.is_following(user) %}hide{% endif %} btn btn-primary btn-sm follow-btn">
                     Follow
                 </button>
