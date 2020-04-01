@@ -27,7 +27,7 @@ class PostForm(FlaskForm):
     submit = SubmitField()
 
     def __init__(self, *args, **kwargs):
-        super.__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.category.choices = [(category.id, category.name)
                                  for category in Category.query.order_by(Category.name).all()]
 

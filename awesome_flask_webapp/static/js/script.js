@@ -98,6 +98,10 @@ $(function () {
         $('.delete-form').attr('action', $(e.relatedTarget).data('href'));
     });
 
+    $('#deletePostModal').on('show.bs.modal', function (e) {
+        $('.delete-post-form').attr('action', $(e.relatedTarget).data('href'));
+    });
+
     $("[data-toggle='tooltip']").tooltip({title: moment($(this).data('timestamp')).format('lll')});
 
     function unfollow(e) {

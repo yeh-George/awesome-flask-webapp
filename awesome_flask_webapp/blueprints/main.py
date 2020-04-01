@@ -6,7 +6,7 @@ from awesome_flask_webapp.utils import redirect_back
 from awesome_flask_webapp.decorators import confirm_required, permission_required
 from awesome_flask_webapp.models import Notification, Post, Comment, Category, Tag, Collect, Follow
 from awesome_flask_webapp.extensions import db
-from awesome_flask_webapp.forms.main import CommentForm
+from awesome_flask_webapp.forms.main import CommentForm, PostForm
 from awesome_flask_webapp.notifications import push_new_comment_notification, push_new_collector_notification
 
 
@@ -23,9 +23,64 @@ def index():
 
 
 @main_bp.route('/post/new', methods=['GET', 'POST'])
+@login_required
+@confirm_required
+@permission_required('POST')
 def new_post():
-    pass
+    form = PostForm()
 
+    if form.validate_on_submit():
+        title = form.title.data
+        category = Category.query.get_or_404(form.category.data)
+        body = form.body.data
+
+        post = Post(title=title, body=body, category=category, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Post created', 'success')
+        return redirect(url_for('user.index', user_id=current_user.id))
+
+    return render_template('main/new_post.html', form=form)
+
+
+@main_bp.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
+@login_required
+@confirm_required
+@permission_required('POST')
+def edit_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if current_user != post.author:
+        abort(403)
+
+    form = PostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.category = Category.query.get(form.category.data)
+        post.body = form.body.data
+
+        db.session.commit()
+        flash('Post updated.', 'success')
+        return redirect(url_for('user.index', user_id=current_user.id))
+
+    form.title.data = post.title
+    form.category.data = post.category.id
+    form.body.data = post.body
+
+    return render_template('main/edit_post.html', form=form)
+
+
+@main_bp.route('/post/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    if current_user != post.author:
+        abort(403)
+
+    db.session.delete(post)
+    db.session.commit()
+    flash('Post deleted.', 'success')
+    return redirect(url_for('user.index', user_id=current_user.id))
 
 
 @main_bp.route('/post/<int:post_id>')

@@ -168,9 +168,6 @@ def notification_setting():
         db.session.commit()
         flash('Notifications setting updated.', 'success')
         return redirect(url_for('user.index', user_id=current_user.id))
-    form.receive_collect_notification.data = current_user.receive_collect_notification
-    form.receive_comment_notification.data = current_user.receive_comment_notification
-    form.receive_follow_notification.data = current_user.receive_follow_notification
 
     return render_template('user/settings/edit_notification.html', form=form)
 

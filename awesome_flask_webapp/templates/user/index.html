@@ -7,23 +7,35 @@
     {% include 'user/_header.html' %}
 
     <div class="row">
-        <div class="col-md-10 mx-auto">
+        <div class="col-md-11 mx-auto">
             {% if posts %}
                 {% for post in posts %}
-                    <h3 class="text-primary">
-                        <a href="{{ url_for('main.show_post', post_id=post.id) }}">{{ post.title }}</a>
-                    </h3>
-                    <p>
-                        {{ post.body|striptags|truncate }}
-                        <small><a href="{{ url_for('main.show_post', post_id=post.id) }}">Read More</a></small>
-                    </p>
-                    <small>
-                        <span class="float-right">
-                             {{ moment(post.timestamp).format('LL') }}
-                         </span>
-                    </small>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <h3 class="text-primary">
+                                <a href="{{ url_for('main.show_post', post_id=post.id) }}">{{ post.title }}</a>
+                             </h3>
+                            <p>
+                                {{ post.body|striptags|truncate(100) }}
+                                <small><a href="{{ url_for('main.show_post', post_id=post.id) }}">Read More</a></small>
+                            </p>
+                            <small>
+                                <span class="float-right">
+                                    {{ moment(post.timestamp).format('LL') }}
+                                </span>
+                            </small>
+                        </div>
+                        <div class="col-md-2" style="margin:auto">
+                            {% if current_user == post.author %}
+                                <a class="btn btn-outline-primary btn-sm"
+                                   href="{{ url_for('main.edit_post', post_id=post.id) }}">Edit </a>
+                                <a class="btn btn-outline-warning btn-sm" hef="#" data-toggle="modal"
+                                   data-target="#deletePostModal"
+                                   data-href="{{ url_for('main.delete_post', post_id=post.id) }}">Delete</a>
+                            {% endif %}
+                        </div>
+                    </div>
                     {% if not loop.last %}
-                        <br>
                         <hr>
                     {% endif %}
                 {% endfor %}
@@ -44,4 +56,26 @@
             {% endif %}
         </div>
     {% endif %}
+
+    <!-- Delete Post Modal-->
+    <div class="modal fade" id="deletePostModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Confirm</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to delete this post? </p>
+                    <form class="inline float-right delete-post-form" method="post" action="">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning btn-sm">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}
