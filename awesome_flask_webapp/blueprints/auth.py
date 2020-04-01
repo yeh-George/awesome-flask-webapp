@@ -40,7 +40,7 @@ def confirm(token):
     if current_user.confirmed:
         return redirect(url_for('main.index'))
 
-    if validate_token(current_user, token, Operations.CONFIRM):
+    if validate_token(current_user, Operations.CONFIRM, token):
         current_user.confirmed = True
         flash('Account confirmed.', 'success')
         return redirect(url_for('main.index'))

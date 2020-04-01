@@ -58,7 +58,6 @@ def show_followers(user_id):
     return render_template('user/followers.html', user=user, pagination=pagination, follows=follows)
 
 
-
 @user_bp.route('/follow/<int:user_id>', methods=['POST'])
 @login_required
 @confirm_required

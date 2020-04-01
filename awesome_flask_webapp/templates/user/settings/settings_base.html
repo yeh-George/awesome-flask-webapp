@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/nav.html' import render_nav_item %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Settings</h1>
+    </div>
+    <div class="row mx-auto">
+        <div class="col-md-3">
+            <div class="nav nav-pills flex-column bg-light" role="tablist" >
+                {{ render_nav_item('user.edit_profile', 'Edit Profile') }}
+                {{ render_nav_item('user.change_password', 'Change Password') }}
+                {{ render_nav_item('user.change_email', 'Change Email') }}
+                {{ render_nav_item('user.notification_setting', 'Notification') }}
+                {{ render_nav_item('user.privacy_setting', 'Privacy') }}
+                {{ render_nav_item('user.delete_account', 'Delete Account') }}
+            </div>
+        </div>
+        <div class="col-md-8">
+            {% block setting_content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %} {% endblock %}

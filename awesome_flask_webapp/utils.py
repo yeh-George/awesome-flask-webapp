@@ -41,7 +41,7 @@ def validate_token(user, operation, token):
     except (BadSignature, SignatureExpired):
         return False
 
-    if operation != data.get('operation') and user.id != data.get('id'):
+    if operation != data.get('operation') or user.id != data.get('id'):
         return False
 
     if operation == Operations.CONFIRM:

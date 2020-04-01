@@ -91,6 +91,10 @@ class User(db.Model, UserMixin):
 
     public_collections = db.Column(db.Boolean, default=True)
 
+    receive_comment_notification = db.Column(db.Boolean, default=True)
+    receive_follow_notification = db.Column(db.Boolean, default=True)
+    receive_collect_notification = db.Column(db.Boolean, default=True)
+
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
     role = db.relationship('Role', back_populates='users')
