@@ -7,6 +7,7 @@ from awesome_flask_webapp.decorators import confirm_required, permission_require
 from awesome_flask_webapp.models import Notification, Post, Comment, Category, Tag, Collect, Follow
 from awesome_flask_webapp.extensions import db
 from awesome_flask_webapp.forms.main import CommentForm
+from awesome_flask_webapp.notifications import push_new_comment_notification, push_new_collector_notification
 
 
 main_bp = Blueprint('main', __name__)
@@ -74,9 +75,17 @@ def new_comment(post_id):
         replied_id = request.args.get('reply')
         if replied_id:
             comment.replied = Comment.query.get_or_404(replied_id)
+            if comment.replied.author.receive_comment_notification:
+                push_new_comment_notification(post_id=post_id, receiver=comment.replied.author)
+
         db.session.add(comment)
         db.session.commit()
         flash("Comment published.", 'success')
+
+        if current_user is not post.author and post.author.receive_comment_notification:
+            push_new_comment_notification(post_id=current_user.id, receiver=post.author, page=page)
+
+        return redirect(url_for('.show_post', post_id=post_id, page=page))
 
     flash('Invalid comment.', 'warning')
     return redirect(url_for('main.show_post', post_id=post.id, page=page))
@@ -88,7 +97,7 @@ def new_comment(post_id):
 def reply_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
     return redirect(url_for('main.show_post', post_id=comment.post_id, reply=comment_id, author=comment.author.name)
-                    + '#confirm-form')
+                    + '#comment-form')
 
 
 @main_bp.route('/delete/comment/<int:comment_id>', methods=['POST'])
@@ -115,6 +124,8 @@ def collect(post_id):
 
     current_user.collect(post)
     flash('Post collected.', 'success')
+    if current_user != post.author and post.author.receive_collect_notification:
+        push_new_collector_notification(collector=current_user, post_id=post.id, receiver=post.author)
     return redirect(url_for('main.show_post', post_id=post_id))
 
 
@@ -166,7 +177,7 @@ def show_notifications():
     return render_template('main/notifications.html', pagination=pagination, notifications=notifications)
 
 
-@main_bp.route('/notification/read/<int:notification_id>')
+@main_bp.route('/notification/read/<int:notification_id>', methods=['POST'])
 @login_required
 def read_notification(notification_id):
     notification = Notification.query.get_or_404(notification_id)
@@ -179,7 +190,7 @@ def read_notification(notification_id):
     return redirect(url_for('.show_notifications'))
 
 
-@main_bp.route('/notification/read/all')
+@main_bp.route('/notification/read/all', methods=['POST'])
 @login_required
 def read_all_notifications():
     for notification in current_user.notifications:

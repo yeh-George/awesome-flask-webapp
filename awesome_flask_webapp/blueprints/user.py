@@ -9,6 +9,8 @@ from awesome_flask_webapp.utils import redirect_back, generate_token, validate_t
 from awesome_flask_webapp.emails import send_change_email_email, send_reset_password_email
 from awesome_flask_webapp.forms.user import EditProfileForm, ChangePasswordForm, ChangeEmailForm, \
     NotificationSettingForm, PublicCollectionsSettingForm, DeleteAccountForm
+from awesome_flask_webapp.notifications import push_new_follower_notification
+
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
 
@@ -70,7 +72,8 @@ def follow(user_id):
 
     current_user.follow(user)
     flash('User followed.', 'success')
-
+    if user.receive_follow_notification:
+        push_new_follower_notification(follower=current_user, receiver=user)
     return redirect_back()
 
 
@@ -157,6 +160,18 @@ def change_email_confirm(token):
 @login_required
 def notification_setting():
     form = NotificationSettingForm()
+
+    if form.validate_on_submit():
+        current_user.receive_collect_notification = form.receive_collect_notification.data
+        current_user.receive_comment_notification = form.receive_comment_notification.data
+        current_user.receive_follow_notification = form.receive_follow_notification.data
+        db.session.commit()
+        flash('Notifications setting updated.', 'success')
+        return redirect(url_for('user.index', user_id=current_user.id))
+    form.receive_collect_notification.data = current_user.receive_collect_notification
+    form.receive_comment_notification.data = current_user.receive_comment_notification
+    form.receive_follow_notification.data = current_user.receive_follow_notification
+
     return render_template('user/settings/edit_notification.html', form=form)
 
 

@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, jsonify
 from flask_login import current_user
 
-from awesome_flask_webapp.models import User, Post
-from awesome_flask_webapp.extensions import db
+from awesome_flask_webapp.models import User, Post, Notification
+from awesome_flask_webapp.notifications import push_new_follower_notification
 
-ajax_bp = Blueprint('ajax', __name__, '/ajax')
+ajax_bp = Blueprint('ajax', __name__, url_prefix='/ajax')
 
 
 @ajax_bp.route('/profile/<int:user_id>')
@@ -27,6 +27,8 @@ def follow(user_id):
         return jsonify(message='Already followed.'), 400
 
     current_user.follow(user)
+    if user.receive_follow_notification:
+        push_new_follower_notification(follower=current_user, receiver=user)
     return jsonify(message='Author followed.')
 
 
@@ -35,7 +37,7 @@ def unfollow(user_id):
     if not current_user.is_authenticated:
         return jsonify(message='Login required.'), 403
 
-    user = User.query.get_or_404()
+    user = User.query.get_or_404(user_id)
     if not current_user.is_following(user):
         return jsonify(message='Not follow yet.'), 400
 
@@ -50,3 +52,11 @@ def followers_count(user_id):
     count = user.followers.count() - 1
     return jsonify(count=count)
 
+
+@ajax_bp.route('/notification-count')
+def notification_count():
+    if not current_user.is_authenticated:
+        return jsonify(message='Login required.'), 403
+
+    count = Notification.query.with_parent(current_user).filter_by(is_read=False).count()
+    return jsonify(count=count)

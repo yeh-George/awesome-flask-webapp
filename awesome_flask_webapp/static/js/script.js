@@ -132,9 +132,6 @@ $(function () {
         });
     }
 
-    $(document).on('click', '.unfollow-btn', unfollow.bind(this));
-    $(document).on('click', '.follow-btn', follow.bind(this));
-
     function update_followers_count(id) {
         var $el = $('#followers-count-' + id);
         $.ajax({
@@ -144,6 +141,31 @@ $(function () {
                 $el.text(data.count);
             }
         });
+    }
+
+    $(document).on('click', '.unfollow-btn', unfollow.bind(this));
+    $(document).on('click', '.follow-btn', follow.bind(this));
+
+
+    function update_notifications_count() {
+        var $el = $('#notification_count_badge');
+
+        $.ajax({
+            type: 'GET',
+            url: $el.data('href'),
+            success: function(data) {
+                if (data.count == 0) {
+                    $el.hide();
+                } else {
+                    $el.show();
+                    $el.text(data.count);
+                }
+            }
+        });
+    }
+
+    if ( is_authenticated ) {
+        setInterval(update_notifications_count, 500000);
     }
 
 

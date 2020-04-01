@@ -69,7 +69,9 @@
                     <p>
                         {% if comment.replied %}
                             Reply
-                            <a href="#">{{ comment.replied.author.name }}</a>:
+                            <a href="{{ url_for('user.index', user_id=comment.author.id) }}">
+                                {{ comment.replied.author.name }}
+                            </a>:
                         {% endif %}
                         {{ comment.body }}
                     </p>

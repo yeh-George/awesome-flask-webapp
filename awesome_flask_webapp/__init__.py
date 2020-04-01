@@ -2,6 +2,7 @@ import os
 import click
 
 from flask import Flask
+from flask_login import current_user
 
 from awesome_flask_webapp.settings import config
 from awesome_flask_webapp.extensions import db, bootstrap, login_manager, mail, ckeditor, moment, csrf, avatars
@@ -73,7 +74,11 @@ def register_template_context(app):
     def make_template_context():
         links = Link.query.order_by(Link.name).all()
         categories = Category.query.order_by(Category.name).all()
-        return dict(links=links, categories=categories)
+        if current_user.is_authenticated:
+            notification_count = Notification.query.with_parent(current_user).filter_by(is_read=False).count()
+        else:
+            notification_count = 0
+        return dict(links=links, categories=categories, notification_count=notification_count)
 
 
 def register_commands(app):
