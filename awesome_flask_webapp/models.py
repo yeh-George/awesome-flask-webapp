@@ -88,6 +88,8 @@ class User(db.Model, UserMixin):
     avatar_l = db.Column(db.String(64))
 
     confirmed = db.Column(db.Boolean, default=False)
+    locked = db.Column(db.Boolean, default=False)
+    blocked = db.Column(db.Boolean, default=False)
 
     public_collections = db.Column(db.Boolean, default=True)
 
@@ -183,6 +185,22 @@ class User(db.Model, UserMixin):
         self.avatar_l = filenames[2]
         db.session.commit()
 
+    def lock(self):
+        self.locked = True
+        db.session.commit()
+
+    def unlock(self):
+        self.locked = False
+        db.session.commit()
+
+    def block(self):
+        self.blocked = True
+        db.session.commit()
+
+    def unblocked(self):
+        self.blocked = False
+        db.session.commit()
+
 
 tags_posts = db.Table(
     'tags_posts',
@@ -226,7 +244,7 @@ class Post(db.Model):
     author = db.relationship('User', back_populates='posts')
     category = db.relationship('Category', back_populates='posts')
     tags = db.relationship('Tag', secondary=tags_posts, back_populates='posts')
-    comments = db.relationship('Comment', back_populates='post')
+    comments = db.relationship('Comment', back_populates='post', cascade='all')
     collectors = db.relationship('Collect', back_populates='collected')
 
 

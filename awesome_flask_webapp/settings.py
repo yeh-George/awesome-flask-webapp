@@ -15,6 +15,7 @@ class BaseConfig(object):
     AWESOME_POST_PER_PAGE = 15
     AWESOME_COMMENT_PER_PAGE = 15
     AWESOME_NOTIFICATION_PER_PAGE = 20
+    AWESOME_MANAGE_PER_PAGE = 10
 
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret key')
 

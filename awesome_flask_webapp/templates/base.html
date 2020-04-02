@@ -52,18 +52,23 @@
                         </a>
                         <div class="dropdown nav-item">
                             <a href="#" class="btn nav-link dropdown-toggle" role="button" data-toggle="dropdown">
-                                <span class="oi oi-heart"></span>
+                                <span class="oi oi-person"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right ">
                                 <h6 class="dropdown-header">Username: {{ current_user.username }}</h6>
                                 <a class="dropdown-item" href="{{ url_for('user.index', user_id=current_user.id) }}">
-                                    <span class="oi oi-person"></span> My Home
+                                    <span class="oi oi-home"></span> Home Page
                                 </a>
                                 <a class="dropdown-item" href="{{ url_for('user.edit_profile') }}">
                                     <span class="oi oi-cog"></span> Settings
                                 </a>
+                                {% if current_user.can('MODERATE') %}
+                                    <a class="dropdown-item" href="{{ url_for('admin.index') }}">
+                                        <span class="oi oi-dashboard"></span> Manage
+                                    </a>
+                                {% endif %}
                                 <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
-                                    <span class="oi oi-power-standby"></span> Logout
+                                    <span class="oi oi-account-logout"></span> Logout
                                 </a>
                             </a>
                         </div>

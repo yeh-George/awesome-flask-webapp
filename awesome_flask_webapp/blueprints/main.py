@@ -74,13 +74,13 @@ def edit_post(post_id):
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
 
-    if current_user != post.author:
+    if current_user != post.author and not current_user.can('MODERATE'):
         abort(403)
 
     db.session.delete(post)
     db.session.commit()
     flash('Post deleted.', 'success')
-    return redirect(url_for('user.index', user_id=current_user.id))
+    return redirect_back()
 
 
 @main_bp.route('/post/<int:post_id>')
@@ -164,6 +164,8 @@ def delete_comment(comment_id):
     db.session.delete(comment)
     db.session.commit()
     flash('Comment deleted.', 'info')
+    if request.args.get('next'):
+        return redirect_back()
     return redirect(url_for('main.show_post', post_id=comment.post_id) + '#comments')
 
 

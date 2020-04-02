@@ -10,6 +10,7 @@ from awesome_flask_webapp.blueprints.main import main_bp
 from awesome_flask_webapp.blueprints.auth import auth_bp
 from awesome_flask_webapp.blueprints.user import user_bp
 from awesome_flask_webapp.blueprints.ajax import ajax_bp
+from awesome_flask_webapp.blueprints.admin import admin_bp
 from awesome_flask_webapp.fakes import (
     fake_post, fake_admin, fake_user, fake_categories, fake_tag, fake_comment, fake_follow, fake_collect, fake_link
 )
@@ -55,6 +56,7 @@ def register_blueprints(app):
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(ajax_bp)
+    app.register_blueprint(admin_bp)
 
 
 def register_errorhandlers(app):
@@ -64,7 +66,7 @@ def register_errorhandlers(app):
 def register_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
-        return dict(db=db, User=User, Post=Post, Tag=Tag,
+        return dict(db=db, User=User, Post=Post, Tag=Tag, Role=Role,
                     Follow=Follow, Collect=Collect, Comment=Comment,
                     Notification=Notification, Link=Link)
 
