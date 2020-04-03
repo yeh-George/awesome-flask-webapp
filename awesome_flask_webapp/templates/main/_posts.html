@@ -12,9 +12,9 @@
             &nbsp;&nbsp;
             Collectors: <a href="{{ url_for('main.show_collectors', post_id=post.id) }}">{{ post.collectors|length }}</a>
             &nbsp;&nbsp;
-            Category: <a href="#">default</a>
+            Category: <a href="#">{{ post.category.name }}</a>
             <span class="float-right">
-                Author: <a href="#">Author Name</a>&nbsp;&nbsp;
+                Author: <a href="{{ url_for('user.index', user_id=post.author.id) }}">{{ post.author.username }}</a>&nbsp;&nbsp;
                 {{ moment(post.timestamp).format('LL') }}
             </span>
         </small>

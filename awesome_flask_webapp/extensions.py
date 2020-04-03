@@ -6,7 +6,7 @@ from flask_ckeditor import CKEditor
 from flask_moment import Moment
 from flask_wtf import CSRFProtect
 from flask_avatars import Avatars
-
+from flask_whooshee import Whooshee
 
 db = SQLAlchemy()
 bootstrap = Bootstrap()
@@ -15,6 +15,7 @@ ckeditor = CKEditor()
 moment = Moment()
 csrf = CSRFProtect()
 avatars = Avatars()
+whooshee = Whooshee()
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'

@@ -5,7 +5,9 @@ from flask import Flask
 from flask_login import current_user
 
 from awesome_flask_webapp.settings import config
-from awesome_flask_webapp.extensions import db, bootstrap, login_manager, mail, ckeditor, moment, csrf, avatars
+from awesome_flask_webapp.extensions import (
+    db, bootstrap, login_manager, mail, ckeditor, moment, csrf, avatars,whooshee
+)
 from awesome_flask_webapp.blueprints.main import main_bp
 from awesome_flask_webapp.blueprints.auth import auth_bp
 from awesome_flask_webapp.blueprints.user import user_bp
@@ -49,6 +51,7 @@ def register_extensions(app):
     moment.init_app(app)
     csrf.init_app(app)
     avatars.init_app(app)
+    whooshee.init_app(app)
 
 
 def register_blueprints(app):
@@ -68,7 +71,7 @@ def register_shell_context(app):
     def make_shell_context():
         return dict(db=db, User=User, Post=Post, Tag=Tag, Role=Role,
                     Follow=Follow, Collect=Collect, Comment=Comment,
-                    Notification=Notification, Link=Link)
+                    Notification=Notification, Link=Link, whooshee=whooshee)
 
 
 def register_template_context(app):

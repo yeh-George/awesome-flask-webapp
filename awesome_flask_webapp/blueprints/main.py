@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 
 from awesome_flask_webapp.utils import redirect_back
 from awesome_flask_webapp.decorators import confirm_required, permission_required
-from awesome_flask_webapp.models import Notification, Post, Comment, Category, Tag, Collect, Follow
+from awesome_flask_webapp.models import Notification, Post, Comment, Category, Tag, Collect, Follow, User
 from awesome_flask_webapp.extensions import db
 from awesome_flask_webapp.forms.main import CommentForm, PostForm
 from awesome_flask_webapp.notifications import push_new_comment_notification, push_new_collector_notification
@@ -266,3 +266,29 @@ def get_avatar(filename):
 def about():
     return render_template('main/about.html')
 
+
+@main_bp.route('/search')
+def search():
+    q = request.args.get('q', '')
+    if q == '':
+        flash('Please enter something.', 'warning')
+        return redirect_back()
+
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['AWESOME_SEARCH_PER_PAGE']
+    category = request.args.get('category', 'user')
+
+    if category == 'user':
+        result_count = User.query.whooshee_search(q).count()
+        pagination = User.query.whooshee_search(q).paginate(page, per_page)
+    elif category == 'tag':
+        result_count = Tag.query.whooshee_search(q).count()
+        pagination = Tag.query.whooshee_search(q).paginate(page, per_page)
+    else:
+        result_count = Post.query.whooshee_search(q).count()
+        pagination = Post.query.whooshee_search(q).paginate(page, per_page)
+
+    results = pagination.items
+
+    return render_template('main/search.html',q=q, pagination=pagination, category=category, results=results,
+                           result_count=result_count)

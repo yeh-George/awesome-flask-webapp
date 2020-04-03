@@ -29,9 +29,9 @@
                 <div class="navbar-nav mr-auto">
                     {{ render_nav_item('main.index', 'Home') }}
                     {{ render_nav_item('main.about', 'About') }}
-                    <form class="form-inline" >
-                        <input type="text" class="form-control" name="q" placeholder="Search">
-                        <button class="btn btn-light" type="submit">
+                    <form class="form-inline ml-3 my-0" action="{{ url_for('main.search') }}">
+                        <input type="text" class="form-control" name="q" placeholder="Search" required>
+                        <button class="btn btn-primary" type="submit">
                             <span class="oi oi-magnifying-glass"></span>
                         </button>
                     </form>

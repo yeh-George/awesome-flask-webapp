@@ -5,7 +5,7 @@ from flask import current_app
 from flask_login import UserMixin
 from flask_avatars import Identicon
 
-from awesome_flask_webapp.extensions import db
+from awesome_flask_webapp.extensions import db, whooshee
 
 
 permissions_roles = db.Table(
@@ -71,6 +71,7 @@ class Collect(db.Model):
     collected = db.relationship('Post', back_populates='collectors', lazy='joined') # post
 
 
+@whooshee.register_model('username')
 class User(db.Model, UserMixin):
     # account info
     id = db.Column(db.Integer, primary_key=True)
@@ -224,6 +225,7 @@ class Category(db.Model):
         db.session.commit()
 
 
+@whooshee.register_model('name')
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), index=True, unique=True)
@@ -231,10 +233,11 @@ class Tag(db.Model):
     posts = db.relationship('Post', secondary=tags_posts, back_populates='tags')
 
 
+@whooshee.register_model('title', 'body')
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
-    body = db.Column(db.Text)
+    title = db.Column(db.String(100), index=True)
+    body = db.Column(db.Text, index=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     can_comment = db.Column(db.Boolean, default=True)
 

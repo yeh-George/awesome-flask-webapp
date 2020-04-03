@@ -1,3 +1,24 @@
+{% macro post_card(post) %}
+        <h3 class="text-primary">
+            <a href="{{ url_for('main.show_post', post_id=post.id) }}">{{ post.title }}</a>
+        </h3>
+        <p>
+            {{ post.body|striptags|truncate }}
+            <small><a href="{{ url_for('main.show_post', post_id=post.id) }}">Read More</a></small>
+        </p>
+        <small>
+            Comments: <a href="{{ url_for('main.show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a>
+            &nbsp;&nbsp;
+            Collectors: <a href="{{ url_for('main.show_collectors', post_id=post.id) }}">{{ post.collectors|length }}</a>
+            &nbsp;&nbsp;
+            Category: <a href="#">{{ post.category.name }}</a>
+            <span class="float-right">
+                Author: <a href="{{ url_for('user.index', user_id=post.author.id) }}">{{ post.author.username }}</a>&nbsp;&nbsp;
+                {{ moment(post.timestamp).format('LL') }}
+            </span>
+        </small>
+{% endmacro %}
+
 {% macro user_card(user) %}
     <div class="user-card text-center">
         <a href="{{ url_for('user.index', user_id=user.id) }}">

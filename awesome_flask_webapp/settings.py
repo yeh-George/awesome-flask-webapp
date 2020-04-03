@@ -16,6 +16,7 @@ class BaseConfig(object):
     AWESOME_COMMENT_PER_PAGE = 15
     AWESOME_NOTIFICATION_PER_PAGE = 20
     AWESOME_MANAGE_PER_PAGE = 10
+    AWESOME_SEARCH_PER_PAGE = 10
 
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret key')
 
@@ -33,6 +34,9 @@ class BaseConfig(object):
     # avatar
     AVATARS_SAVE_PATH = os.path.join(basedir, 'avatars')
     AVATARS_SIZE_TUPLE = (30, 100, 200)
+
+    # Whooshee
+    WHOOSHEE_MIN_STRING_LEN = 1
 
 
 
