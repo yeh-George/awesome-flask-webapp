@@ -40,3 +40,16 @@ class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), Length(1, 128), EqualTo('password_confirm')])
     password_confirm = PasswordField('Confirm Password', validators=[DataRequired(), Length(1, 128)])
     submit = SubmitField()
+
+
+class RegisterSetPasswordForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 30),
+                                                   Regexp('^[a-zA-Z0-9]*$',
+                                                          message='username only contain a-z, A-Z, 0-9.')])
+    password = PasswordField('Password', validators=[DataRequired(), Length(1, 128), EqualTo('password_confirm')])
+    password_confirm = PasswordField('Confirm Password', validators=[DataRequired(), Length(1, 128)])
+    submit = SubmitField('Register')
+
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError(message='This username has been used.')

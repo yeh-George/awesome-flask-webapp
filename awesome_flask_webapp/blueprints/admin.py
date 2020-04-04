@@ -8,6 +8,7 @@ from awesome_flask_webapp.decorators import admin_required, permission_required
 from awesome_flask_webapp.utils import redirect_back
 from awesome_flask_webapp.forms.admin import LinkForm
 
+
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 

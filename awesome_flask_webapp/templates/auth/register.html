@@ -4,17 +4,22 @@
 {% block title %} Register {% endblock %}
 
 {% block content %}
-   <div class="container w-3 h-100">
-        <div class="row w-3 h-100 page-header justify-content-center align-items-center">
-            <h1>Register </h1>
+   <div class="container w-3 h-75">
+        <div class="row w-3 h-75 mt-0 page-header justify-content-center align-items-center">
+            <h1 class="mt-0">Register </h1>
         </div>
-        <div class="row h-100 justify-content-center align-items-center">
+        <div class="row h-75 justify-content-center align-items-center">
             <div class="col-md-5">
                 {{ render_form(form) }}
                 <hr>
                 <p class="small">
-                    Already have an account? <a href="{{ url_for('auth.login') }}" >Click here to log in.</a>
+                    Already have an account? <a href="{{ url_for('auth.login') }}" >Click here to log in. </a>
+                <span class="text-muted bg-light"> Or register with GitHub </span>
+                <a href="{{ url_for('oauth.oauth_login', provider_name='github') }}" >
+                    <img class="avatar-xs" src="{{ url_for('static', filename='github.ico') }}">
+                </a>
                 </p>
+
             </div>
         </div>
     </div>

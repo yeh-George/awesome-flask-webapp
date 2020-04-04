@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+{% from 'macros.html' import post_card, user_card with context %}
+
+{% block title %}Search: {{ q }}{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h4 class="text-muted"> "{{ q }}" has <span style="color:red"> {{ result_count }}</span>
+            {% if category == 'user'  %}
+                users
+            {% elif category == 'post' %}
+                posts
+            {% elif category == 'tag' %}
+                tags
+            {% endif %}
+        </h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-9 mx-auto">
+            <div class="nav nav-tab mr-4 mb-4 px-4 " role="tablist">
+                <a class="nav-item nav-link {% if category == 'user' %}bg-light{% endif %}"
+                   href="{{ url_for('.search', q=q, category='user') }}">User</a>
+                <a class="nav-item nav-link {% if category == 'post' %}bg-light{% endif %}"
+                   href="{{ url_for('.search', q=q, category='post') }}">Post</a>
+                <a class="nav-item nav-link {% if category == 'tag' %}bg-light{% endif %}"
+                   href="{{ url_for('.search', q=q, category='tag') }}">Tag</a>
+            </div>
+            <div class="bg-light">
+            {% if results %}
+                {% for item in results %}
+                    {% if category == 'post' %}
+                        {{ post_card(item) }}
+                        {% if not loop.last %}
+                            <hr>
+                        {% endif %}
+                    {% elif category == 'user' %}
+                        {{ user_card(item) }}
+                    {% else %}
+                        <a class="btn btn-white m-2 p-1" href="#">
+                            <span class="oi oi-tag"></span> {{ item.name }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <h5 class="tip">No results.</h5>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if results %}
+        <div class="page-footer">
+            {% if pagination.pages > 1%}
+                {{ render_pagination(pagination, align='center', size='sm') }}
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block footer%}{% endblock%}

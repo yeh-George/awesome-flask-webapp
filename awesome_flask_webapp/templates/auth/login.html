@@ -11,9 +11,12 @@
         <div class="row h-100 justify-content-center align-items-center">
             <div class="col-md-5">
                 {{ render_form(form) }}
+
                 <hr>
-                <p class="small"><a href="{{ url_for('auth.register') }}" >Register new account</a> </p>
-                <p class="small"><a href="#" >Forget password</a></p>
+                <span class="text-muted bg-light"> Signin with GitHub </span>
+                <a href="{{ url_for('oauth.oauth_login', provider_name='github') }}" >
+                    <img class="avatar-xs" src="{{ url_for('static', filename='github.ico') }}">
+                </a>
             </div>
         </div>
     </div>

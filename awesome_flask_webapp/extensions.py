@@ -7,6 +7,7 @@ from flask_moment import Moment
 from flask_wtf import CSRFProtect
 from flask_avatars import Avatars
 from flask_whooshee import Whooshee
+from authlib.integrations.flask_client import OAuth
 
 db = SQLAlchemy()
 bootstrap = Bootstrap()
@@ -16,6 +17,7 @@ moment = Moment()
 csrf = CSRFProtect()
 avatars = Avatars()
 whooshee = Whooshee()
+oauth = OAuth()
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'

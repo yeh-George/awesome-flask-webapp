@@ -6,13 +6,14 @@ from flask_login import current_user
 
 from awesome_flask_webapp.settings import config
 from awesome_flask_webapp.extensions import (
-    db, bootstrap, login_manager, mail, ckeditor, moment, csrf, avatars,whooshee
+    db, bootstrap, login_manager, mail, ckeditor, moment, csrf, avatars,whooshee, oauth
 )
 from awesome_flask_webapp.blueprints.main import main_bp
 from awesome_flask_webapp.blueprints.auth import auth_bp
 from awesome_flask_webapp.blueprints.user import user_bp
 from awesome_flask_webapp.blueprints.ajax import ajax_bp
 from awesome_flask_webapp.blueprints.admin import admin_bp
+from awesome_flask_webapp.blueprints.oauth import oauth_bp
 from awesome_flask_webapp.fakes import (
     fake_post, fake_admin, fake_user, fake_categories, fake_tag, fake_comment, fake_follow, fake_collect, fake_link
 )
@@ -53,6 +54,11 @@ def register_extensions(app):
     avatars.init_app(app)
     whooshee.init_app(app)
 
+    register_oauth_and_client(app, oauth)
+
+
+
+
 
 def register_blueprints(app):
     app.register_blueprint(main_bp)
@@ -60,6 +66,7 @@ def register_blueprints(app):
     app.register_blueprint(user_bp)
     app.register_blueprint(ajax_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(oauth_bp)
 
 
 def register_errorhandlers(app):
@@ -109,3 +116,19 @@ def register_commands(app):
         fake_comment()
         fake_link()
         click.echo('forge done.')
+
+
+def register_oauth_and_client(app, oauth):
+    oauth.init_app(app)
+    # register remote_app (provider)
+    oauth.register(
+        name='github',
+        client_id=os.getenv('GITHUB_CLIENT_ID'),
+        client_secret=os.getenv('GITHUB_CLIENT_SECRET'),
+        access_token_url='https://github.com/login/oauth/access_token',
+        access_token_params=None,
+        authorize_url='https://github.com/login/oauth/authorize',
+        authorize_params=None,
+        api_base_url='https://api.github.com/',
+        client_kwargs={'scope': 'user:email'},
+    )

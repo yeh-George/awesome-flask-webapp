@@ -1,0 +1,59 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}Manage Comments{% endblock %}
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {{ render_breadcrumb_item('admin.index', 'Manage') }}
+            {{ render_breadcrumb_item('admin.manage_comment', 'Manage Comment') }}
+        </ol>
+    </nav>
+    <div class="page-header">
+        <h1>Comments
+            <small class="text-muted">{{ pagination.total }}</small>
+        </h1>
+    </div>
+    {% if comments %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Body</th>
+                <th>Author</th>
+                <th>Post</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            {% for comment in comments %}
+                <tr>
+                    <td>{{ comment.body }}</td>
+                    <td>
+                        <a href="{{ url_for('user.index', user_id=comment.author.id) }}">{{ comment.author.name }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('main.show_post', post_id=comment.post.id) }}">{{ comment.post.title }}</a>
+                    </td>
+                    <td>{{ moment(comment.timestamp).format('L') }}</td>
+                    <td>
+                        <form class="inline" method="post"
+                              action="{{ url_for('main.delete_comment', comment_id=comment.id, next=request.full_path) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure?');">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="page-footer">
+            {% if pagination.pages > 1 %}
+                {{ render_pagination(pagination, align='center') }}
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="tip"><h5>No comment.</h5></div>
+    {% endif %}
+{% endblock %}

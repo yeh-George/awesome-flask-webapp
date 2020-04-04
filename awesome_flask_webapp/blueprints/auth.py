@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, Markup
 from flask_login import login_user, logout_user, login_required, current_user, login_fresh, confirm_login
 
 from awesome_flask_webapp.settings import Operations
 from awesome_flask_webapp.extensions import db
 from awesome_flask_webapp.forms.auth import LoginForm, RegisterForm
-from awesome_flask_webapp.models import User
+from awesome_flask_webapp.models import User, Role
 from awesome_flask_webapp.utils import redirect_back, generate_token, validate_token
 from awesome_flask_webapp.emails import send_confirm_email
 
@@ -31,7 +31,30 @@ def register():
         flash('Confirm Email sent, please check your inbox', 'info')
         login_user(user)
         return redirect(url_for('main.index'))
+
+    flash(Markup('<a href="%s" class="btn  btn-primary btn-sm ">Register</a> a administrator account with confirmed email' % (
+            url_for('auth.register_without_confirm'))), 'primary')
+
     return render_template('auth/register.html', form=form)
+
+
+@auth_bp.route('/register-without-confirm')
+def register_without_confirm():
+    username = 'administrator'
+    email = 'admin@blog.com'
+    password = '123456'
+    user = User(username=username, email=email)
+    user.set_password(password)
+    user.confirmed = True
+
+    role = Role.query.filter_by(name='Administrator').first()
+    user.role = role
+
+    db.session.add(user)
+    db.session.commit()
+    login_user(user)
+    flash('Administrator account created.', 'success')
+    return redirect(url_for('main.index'))
 
 
 @auth_bp.route('/confirm/<token>')
@@ -97,5 +120,6 @@ def re_authenticate():
         return redirect_back()
 
     return render_template('auth/login.html', form=form)
+
 
 
