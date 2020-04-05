@@ -1,8 +1,8 @@
-# awesome-flask-webapp
+# AWESOME-FLASK-WEBAPP
 
 这是Yeh George使用flask框架以及多种FLASK扩展搭建的blog webapp。
 
-***Demo***：[awesome-flask-webapp](http://yeh.pythonanywhere.com)
+**Demo**：[awesome-flask-webapp](http://yeh.pythonanywhere.com)
  
 ---
 
@@ -28,11 +28,12 @@
 > 主要功能发布文章，展示文章详情、评论以及收藏文章，同时实现文章的标签、分类展示
 
 
-+ #### 用户资料弹窗、文章收藏、用户关注、用户消息提醒及轮询更新消息数  
- + 用户资料弹窗：
-  > 监听hover事件并使用setTimeout()实现鼠标悬停一段事件后才触发弹窗  
-  > 使用jQuery的ajax()方法动态获取用户资料数据，关注用户  
-  > 使用setInterval和ajax()实现消息提醒的定时更新  
++ #### 用户资料弹窗、文章收藏、用户关注、用户消息提醒及定时更新消息数  
+    + 用户资料弹窗：
+      > 监听hover事件并使用setTimeout()实现鼠标悬停一段事件后才触发弹窗  
+      > 使用jQuery的ajax()方法动态获取用户资料数据，关注用户  
+    + 定时更新消息提醒数  
+      > 使用setInterval和ajax()实现消息提醒的定时更新  
   
   
 + #### 全文搜索  
@@ -47,4 +48,7 @@
 
 + 管理文章、评论、分类、标签
 
+## 计划进一步实现的功能：
+1. Redis
+2. WEB API
 
