@@ -6,8 +6,7 @@ from awesome_flask_webapp.extensions import db
 from awesome_flask_webapp.models import Role, User, Post, Category, Comment, Tag, Link
 from awesome_flask_webapp.decorators import admin_required, permission_required
 from awesome_flask_webapp.utils import redirect_back
-from awesome_flask_webapp.forms.admin import LinkForm
-
+from awesome_flask_webapp.forms.admin import LinkForm, EditProfileAdminForm
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -113,7 +112,33 @@ def manage_link():
 @login_required
 @admin_required
 def edit_profile_admin(user_id):
-    pass
+    user = User.query.get_or_404(user_id)
+    form = EditProfileAdminForm(user=user)
+
+    if form.validate_on_submit():
+        user.name = form.name.data
+        role = Role.query.get(form.role.data)
+        if role.name == 'Locked':
+            user.lock()
+
+        user.role = role
+        user.bio = form.bio.data
+        user.confirmed = form.confirmed.data
+        user.active = form.active.data
+        user.username = form.username.data
+        user.email = form.email.data
+        db.session.commit()
+        flash('Profile updated.', 'success')
+        return redirect_back()
+
+    form.name.data = user.name
+    form.role.data = user.role_id
+    form.bio.data = user.bio
+    form.username.data = user.username
+    form.email.data = user.email
+    form.confirmed.data = user.confirmed
+    form.blocked.data = user.blocked
+    return render_template('admin/edit_profile_admin.html', form=form, user=user)
 
 
 @admin_bp.route('/block/user/<int:user_id>', methods=['POST'])

@@ -53,3 +53,6 @@ class RegisterSetPasswordForm(FlaskForm):
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError(message='This username has been used.')
+
+
+
