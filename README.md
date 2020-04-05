@@ -1,20 +1,23 @@
 # awesome-flask-webapp
 
-这是Yeh George使用flask框架以及大量的FLASK扩展搭建的blog webapp。
+这是Yeh George使用flask框架以及多种FLASK扩展搭建的blog webapp。
 
-Demo：<http:yeh.pythonanywhere.com>
+Demo：[awesome-flask-webapp]<http://yeh.pythonanywhere.com>
+ 
+---
 
 ## 主要实现以下功能：
+
 ### 1. 角色与权限管理  
 
-Permission和Role模型 
+ Permission和Role模型 
  
 ### 2. 注册/登录页面
 + #### 注册  
-使用FLASK-MAIL进行邮件验证  
-使用FLASK-Avatars生成用户头像
+> 使用FLASK-MAIL进行邮件验证  
+> 使用FLASK-Avatars生成用户头像
 + #### 登录  
-使用FLASK-LOGIN实现用户登录管理
+> 使用FLASK-LOGIN实现用户登录管理
 + #### 第三方登录  
 使用Authlib实现GitHub第三方登录
 
