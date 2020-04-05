@@ -1,6 +1,7 @@
 import os
 import click
 
+from werkzeug.contrib.fixers import ProxyFix
 from flask import Flask
 from flask_login import current_user
 
@@ -25,6 +26,8 @@ def create_app(config_name=None):
         config_name = os.getenv('FLASK_CONFIG', 'development')
 
     app = Flask('awesome_flask_webapp')
+    app.wsgi_app = ProxyFix(app.wsgi_app)
+
     app.config.from_object(config[config_name])
 
     # 扩展初始化
