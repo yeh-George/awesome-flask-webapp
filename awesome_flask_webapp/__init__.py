@@ -1,7 +1,7 @@
 import os
 import click
 
-from werkzeug.contrib.fixers import ProxyFix
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask import Flask
 from flask_login import current_user
 
