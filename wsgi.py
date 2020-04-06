@@ -7,4 +7,4 @@ if os.path.exists(dotenv_path):
 
 from awesome_flask_webapp import create_app
 
-app = create_app('production')
+app = create_app('development')

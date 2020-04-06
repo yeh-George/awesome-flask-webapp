@@ -49,7 +49,7 @@ class TestingConfig(BaseConfig):
 
 
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_POOL_RECYCLE = 280
+    SQLALCHEMY_POOL_RECYCLE = 28000
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///' + os.path.join(basedir, 'data.db'))
 
 
