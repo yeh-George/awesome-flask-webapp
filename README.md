@@ -51,7 +51,8 @@
 
 
 ## 计划进一步实现的功能：
-1. Redis
-2. WEB API
+1. ~Redis~ 使用Redis结合Flask-Caching扩展实现视图函数的缓存
+2. ~Web API~ 使用api_v1蓝本加上MethodView方法视图类实现了User、Post的部分Web API，为未来实现自己的Blog客户端提供数据服务
+3. ~OAuth认证~ 基于认证将仅限在本网站的Blog客户端使用，采用Resource Owner Password Credentials认证模式，借助与Flask依赖包itrdangerous生成有过期时间的JWS access令牌，客户端在发送请求访问受认证保护的端点时，需要在首部字段Authorization中加入认证令牌。
 4. 使用Vue框架实现MVVM
 3. 手机验证码注册账号
