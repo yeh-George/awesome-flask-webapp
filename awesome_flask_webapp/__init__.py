@@ -15,6 +15,7 @@ from awesome_flask_webapp.blueprints.user import user_bp
 from awesome_flask_webapp.blueprints.ajax import ajax_bp
 from awesome_flask_webapp.blueprints.admin import admin_bp
 from awesome_flask_webapp.blueprints.oauth import oauth_bp
+from awesome_flask_webapp.apis.v1 import api_v1
 from awesome_flask_webapp.fakes import (
     fake_post, fake_admin, fake_user, fake_categories, fake_tag, fake_comment, fake_follow, fake_collect, fake_link
 )
@@ -59,9 +60,7 @@ def register_extensions(app):
     cache.init_app(app, config={'CACHE_TYPE': app.config['CACHE_TYPE']})
 
     register_oauth_and_client(app, oauth)
-
-
-
+    csrf.exempt(api_v1)
 
 
 def register_blueprints(app):
@@ -71,6 +70,7 @@ def register_blueprints(app):
     app.register_blueprint(ajax_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(oauth_bp)
+    app.register_blueprint(api_v1)
 
 
 def register_errorhandlers(app):

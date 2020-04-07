@@ -10,6 +10,7 @@ from flask_whooshee import Whooshee
 from authlib.integrations.flask_client import OAuth
 from flask_caching import Cache
 
+
 db = SQLAlchemy()
 bootstrap = Bootstrap()
 mail = Mail()
