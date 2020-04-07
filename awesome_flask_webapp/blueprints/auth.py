@@ -1,3 +1,5 @@
+import random
+
 from flask import Blueprint, render_template, redirect, url_for, flash, Markup
 from flask_login import login_user, logout_user, login_required, current_user, login_fresh, confirm_login
 
@@ -40,8 +42,8 @@ def register():
 
 @auth_bp.route('/register-without-confirm')
 def register_without_confirm():
-    username = 'administrator'
-    email = 'admin@blog.com'
+    username = 'administrator%s' % random.randint(1, 10000)
+    email = 'admin%s@blog.com' % random.randint(1, 100000)
     password = '123456'
     user = User(username=username, email=email)
     user.set_password(password)
