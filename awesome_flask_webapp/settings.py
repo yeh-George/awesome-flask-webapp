@@ -37,11 +37,14 @@ class BaseConfig(object):
 
     # Whooshee
     WHOOSHEE_MIN_STRING_LEN = 1
-
+    # cache
 
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.db')
+
+    CACHE_TYPE = 'null'
+    CACHE_NO_NULL_WARNING = True
 
 
 class TestingConfig(BaseConfig):
@@ -49,8 +52,16 @@ class TestingConfig(BaseConfig):
 
 
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_POOL_RECYCLE = 28000
+    SQLALCHEMY_POOL_RECYCLE = 280
+    SQLALCHEMY_POOL_TIMEOUT = 600
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///' + os.path.join(basedir, 'data.db'))
+    #cache redis
+    CACHE_TYPE = 'redis'
+
+    CACHE_DEFAULT_TIMEOUT = 60
+    CACHE_REDIS_HOST = 'localhost'
+    CACHE_REDIS_PORT = '6379'
+    CACHE_REDIS_DB = '0'
 
 
 config = {

@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from awesome_flask_webapp.utils import redirect_back
 from awesome_flask_webapp.decorators import confirm_required, permission_required
 from awesome_flask_webapp.models import Notification, Post, Comment, Category, Tag, Collect, Follow, User
-from awesome_flask_webapp.extensions import db
+from awesome_flask_webapp.extensions import db, cache
 from awesome_flask_webapp.forms.main import CommentForm, PostForm
 from awesome_flask_webapp.notifications import push_new_comment_notification, push_new_collector_notification
 
@@ -200,6 +200,7 @@ def uncollect(post_id):
 
 
 @main_bp.route('/post/<int:post_id>/collectors')
+@cache.cached(timeout=60)
 def show_collectors(post_id):
     post = Post.query.get_or_404(post_id)
     page = request.args.get('page', 1, type=int)
@@ -210,6 +211,7 @@ def show_collectors(post_id):
 
 
 @main_bp.route('/category/<int:category_id>')
+@cache.cached(timeout=60)
 def show_category(category_id):
     category = Category.query.get_or_404(category_id)
     page = request.args.get('page', 1, type=int)
@@ -263,6 +265,7 @@ def get_avatar(filename):
 
 
 @main_bp.route('/about')
+@cache.cached(timeout=3600 * 24)
 def about():
     return render_template('main/about.html')
 

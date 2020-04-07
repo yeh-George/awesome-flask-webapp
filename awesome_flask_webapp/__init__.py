@@ -7,7 +7,7 @@ from flask_login import current_user
 
 from awesome_flask_webapp.settings import config
 from awesome_flask_webapp.extensions import (
-    db, bootstrap, login_manager, mail, ckeditor, moment, csrf, avatars,whooshee, oauth
+    db, bootstrap, login_manager, mail, ckeditor, moment, csrf, avatars,whooshee, oauth, cache
 )
 from awesome_flask_webapp.blueprints.main import main_bp
 from awesome_flask_webapp.blueprints.auth import auth_bp
@@ -56,6 +56,7 @@ def register_extensions(app):
     csrf.init_app(app)
     avatars.init_app(app)
     whooshee.init_app(app)
+    cache.init_app(app, config={'CACHE_TYPE': app.config['CACHE_TYPE']})
 
     register_oauth_and_client(app, oauth)
 
