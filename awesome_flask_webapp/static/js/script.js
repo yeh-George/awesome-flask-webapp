@@ -172,5 +172,8 @@ $(function () {
         setInterval(update_notifications_count, 500000);
     }
 
+    setTimeout(function() {
+        $('.alert').fadeOut();
+    }, 3000);
 
 });

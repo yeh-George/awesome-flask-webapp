@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+    资源序列化
+"""
 from flask import url_for
 
 

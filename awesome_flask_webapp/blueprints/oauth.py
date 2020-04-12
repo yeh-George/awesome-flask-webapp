@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os, time
 
 from flask import Blueprint, url_for, render_template, flash, abort, redirect

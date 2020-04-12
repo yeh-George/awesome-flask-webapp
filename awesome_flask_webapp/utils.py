@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from urllib.parse import urlparse, urljoin
 
 from flask import current_app, request, redirect, url_for

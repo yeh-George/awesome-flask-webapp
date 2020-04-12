@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import url_for
 
 from awesome_flask_webapp.extensions import db

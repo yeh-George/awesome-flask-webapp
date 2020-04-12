@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+    ajax（）方法对应的视图函数
+"""
 from flask import Blueprint, render_template, jsonify
 from flask_login import current_user
 
@@ -7,12 +11,14 @@ from awesome_flask_webapp.notifications import push_new_follower_notification
 ajax_bp = Blueprint('ajax', __name__, url_prefix='/ajax')
 
 
+#获取用户资料
 @ajax_bp.route('/profile/<int:user_id>')
 def get_profile(user_id):
     user = User.query.get_or_404(user_id)
     return render_template('main/profile.html', user=user)
 
 
+#关注用户
 @ajax_bp.route('/follow/<int:user_id>', methods=['POST'])
 def follow(user_id):
     if not current_user.is_authenticated:
@@ -32,6 +38,7 @@ def follow(user_id):
     return jsonify(message='Author followed.')
 
 
+#取消关注
 @ajax_bp.route('/unfollow/<int:user_id>', methods=['POST'])
 def unfollow(user_id):
     if not current_user.is_authenticated:
@@ -46,6 +53,7 @@ def unfollow(user_id):
 
 
 
+#关注者数量
 @ajax_bp.route('/followers-count/<int:user_id>')
 def followers_count(user_id):
     user = User.query.get_or_404(user_id)
@@ -53,6 +61,7 @@ def followers_count(user_id):
     return jsonify(count=count)
 
 
+#用于定时更新页面消息提醒数量，
 @ajax_bp.route('/notification-count')
 def notification_count():
     if not current_user.is_authenticated:

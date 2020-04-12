@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from functools import wraps
 
 from flask import Markup, url_for, redirect, abort, flash

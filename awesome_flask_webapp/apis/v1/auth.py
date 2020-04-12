@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+    generate_token:生成access令牌
+    oauth_required:类似于Flask-Login login_required装饰器，通过get_token()获取首部字段中的access令牌，validate_token验证令牌
+"""
 from functools import wraps
 
 from flask import current_app, url_for, g, request
