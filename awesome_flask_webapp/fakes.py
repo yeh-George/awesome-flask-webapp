@@ -115,9 +115,9 @@ def fake_comment(count=100):
 
 
 def fake_link():
-    twitter = Link(name='Twitter', url='#')
-    facebook = Link(name='Facebook', url='#')
-    linkedin = Link(name='LinkedIn', url='#')
-    google = Link(name='Google+', url='#')
+    facebook = Link(name="Yeh's Github", url='https://github.com/yeh-George/awesome-flask-webapp')
+    linkedin = Link(name='Hello Flask', url='http://www.helloflask.com/')
+    google = Link(name='Python', url='https://www.liaoxuefeng.com/wiki/1016959663602400')
+    twitter = Link(name='Git Pro', url='https://gitee.com/progit/')
     db.session.add_all([twitter, facebook, linkedin, google])
     db.session.commit()
