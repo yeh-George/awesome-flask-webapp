@@ -2,7 +2,7 @@
 
 这是Yeh George使用flask框架以及多种FLASK扩展搭建的blog webapp。
 
-**Demo**：[awesome-flask-webapp](http://yeh.pythonanywhere.com)
+**Demo**：[awesome-flask-webapp](http://203.195.141.243:8001/)
  
 ---
 
